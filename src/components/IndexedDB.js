@@ -29,7 +29,7 @@ export function openDataBase() {
 //   const cursor = await store.openCursor();
 // }
 
-export async function addNote(
+export async function addNoteIndexedDB(
   noteId,
   usersId,
   title,
@@ -57,7 +57,7 @@ export async function addNote(
 //   return allNote;
 // }
 
-export async function readAllNote(idUser) {
+export async function getNoteIndexedDB(idUser) {
   const db = await openDataBase();
   const allNote = await db.getAll("note");
   const sizeIDB = allNote.length

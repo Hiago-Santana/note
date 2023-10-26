@@ -1,12 +1,15 @@
 <script>
-import { isJson, formatDate } from './components/Tools'//import {readAllNote} from './components/'
+import { isJson, formatDate } from './components/Tools'//import {getNoteIndexedDB} from './components/'
 import { onMounted } from 'vue';
-//import { addNote, readAllNote, setNote } from './components/IndexedDB'
-import {readAllNote} from './components/IndexedDB';
+//import { addNote, getNoteIndexedDB, setNote } from './components/IndexedDB'
+import { getNoteIndexedDB } from './components/IndexedDB';
+//import { syncCloundToIndexedDB } from './components/SyncNote.js'
 import Index from 'flexsearch';
 import { fromJSON } from 'postcss';
+import AddNote from './components/AddNote.vue';
 
 export default {
+  components: { AddNote },
 
   data() {
     return {
@@ -22,6 +25,9 @@ export default {
       index: new Index({ tokenize: "full" }),
       idUser: null,
 
+      noteClound: [],
+      noteIndexedDB: null
+
     }
   },
   methods: {
@@ -29,14 +35,105 @@ export default {
       console.log("App token")
     },
 
+    async syncCloundToIndexedDB(resultCloundLogin) {
+      //this.resultCloundLogin = resultCloundLogin;
+      let noteIdClound;
+      let usersIdClound;
+      let titleClound;
+      let descriptionClound;
+      let lastUpdateclound;
+      let deletedClound;
+      
+      this.noteClound = resultCloundLogin.note.results;
+      
+      this.idUser = resultCloundLogin.idUser;
+      console.log(this.idUser)
+      this.noteIndexedDB = await getNoteIndexedDB(this.idUser);
+
+      let sizeIndexedDB = this.noteIndexedDB.length;
+      let sizeClound = this.noteClound.length;
+
+      for (let i = 0; i < sizeClound; i++) {
+        noteIdClound = this.noteClound[i].noteId;
+        usersIdClound = this.noteClound[i].usersId;
+        titleClound = this.noteClound[i].title;
+        descriptionClound = this.noteClound[i].description;
+        lastUpdateclound = this.noteClound[i].lastUpdate;
+        deletedClound = this.noteClound[i].deleted;
+
+        //console.log("lastUpdateclound", lastUpdateclound)
+        if (sizeClound > 0 && sizeIndexedDB > 0) {
+          for (let i = 0; i < sizeIndexedDB; i++) {
+            try {
+              lastUpdateLocal = this.sizeIndexedDB.find(
+                (Element) => Element.noteId == noteIdClound
+              ).lastUpdate;
+
+              if (lastUpdateclound > lastUpdateLocal) {
+                noteIdLocal = this.sizeIndexedDB.find(
+                  (Element) => Element.noteId == noteIdClound
+                ).id;
+                await setNote(
+                  noteIdLocal,
+                  noteIdClound,
+                  usersIdClound,
+                  titleClound,
+                  descriptionClound,
+                  lastUpdateclound,
+                  deletedClound
+                );
+                this.allNote = await getNoteIndexedDB(this.idUser);
+              }
+              if (lastUpdateclound < lastUpdateLocal) {
+                //await insertNote(title, description, token, id)
+                //avaliar se é necessário criar ele aqui
+              }
+            } catch (error) {
+              await addNote(
+                noteIdClound,
+                usersIdClound,
+                titleClound,
+                descriptionClound,
+                lastUpdateclound,
+                deletedClound
+              );
+              this.allNote = await getNoteIndexedDB(this.idUser);
+              break;
+            }
+          }
+        } else if (sizeClound > 0 && sizeIndexedDB == 0) {
+          for (let i = 0; i < sizeClound; i++) {
+            noteIdClound = this.noteClound.noteId;
+            usersIdClound = this.noteClound.usersId;
+            titleClound = this.noteClound.title;
+            descriptionClound = this.noteClound.description;
+            lastUpdateclound = this.noteClound.lastUpdate;
+            deletedClound = this.noteClound.deleted;
+            await addNote(
+              noteIdClound,
+              usersIdClound,
+              titleClound,
+              descriptionClound,
+              lastUpdateclound,
+              deletedClound
+            );
+          }
+
+          this.allNote = await getNoteIndexedDB(this.idUser);
+          sizeIndexedDB = this.sizeIndexedDB.length;
+          break;
+        }
+      }
+    },
+
     async reloadNote(resultCloundLogin) {
       //Get data from database and reload notes  
-      console.log("resultClound",resultCloundLogin)
+      console.log("resultClound", resultCloundLogin)
       this.resultCloundLogin = resultCloundLogin;
       this.token = this.resultCloundLogin.token
       this.logIn = this.resultCloundLogin.authentication
       this.idUser = this.resultCloundLogin.idUser
-      this.allNote = await readAllNote(this.idUser);
+      this.allNote = await getNoteIndexedDB(this.idUser);
       this.allNoteClound = resultCloundLogin.note;
 
       let noteIdClound;
@@ -76,7 +173,7 @@ export default {
               if (lastUpdateclound > lastUpdateLocal) {
                 noteIdLocal = this.allNote.find(Element => Element.noteId == noteIdClound).id
                 await setNote(noteIdLocal, noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-                this.allNote = await readAllNote(this.idUser);
+                this.allNote = await getNoteIndexedDB(this.idUser);
               }
               if (lastUpdateclound < lastUpdateLocal) {
                 //await insertNote(title, description, token, id)
@@ -85,7 +182,7 @@ export default {
             } catch (error) {
 
               await addNote(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-              this.allNote = await readAllNote(this.idUser);
+              this.allNote = await getNoteIndexedDB(this.idUser);
               break
             }
           }
@@ -100,7 +197,7 @@ export default {
             await addNote(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
           }
 
-          this.allNote = await readAllNote(this.idUser);
+          this.allNote = await getNoteIndexedDB(this.idUser);
           sizeLocal = this.allNote.length;
           break
         }
@@ -123,7 +220,7 @@ export default {
             console.log("idNotInserted", idNotInserted)
             setNote(idNoteLocal, idNotInserted, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateInsertedNote, deletedInsertNote)
 
-            this.allNote = await readAllNote(this.idUser);
+            this.allNote = await getNoteIndexedDB(this.idUser);
           } else {
 
             noteIdLocal = this.allNote[i].noteId;
@@ -141,7 +238,7 @@ export default {
               const lastUpdateSetClound = updateNoteClound.res.lastNote.results[0].lastUpdate
               const deletedSetClound = updateNoteClound.res.lastNote.results[0].deleted
               await setNote(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateSetClound, deletedSetClound);
-              this.allNote = await readAllNote(this.idUser);
+              this.allNote = await getNoteIndexedDB(this.idUser);
 
             }
           }
@@ -184,47 +281,44 @@ export default {
         this.noNote = true;
       }
     },
-
-    toggleScreen() {
-      this.screenWidth = window.innerWidth;
-      if (this.screenWidth < 500) {
-        this.toggleWidht = true;
-      } else {
-        this.toggleWidht = false;
-      }
-    }
-  }
+  },
 }
 </script>
 <template>
   <login-sign-up @call-reload-note="reloadNote"></login-sign-up>
+  <div v-if="logIn">
+    <add-note 
+    :token="token"
+    :id-user="idUser"
+    ></add-note>
+  </div>
+  
   <!-- view saved notes -->
-  <div v-if="logIn"> 
+  <div v-if="logIn">
     <div v-if="!toggleModal || toggleModal && !toggleWidht"
-    class="grid xl:grid-cols-7 xl:gap-4 md:grid-cols-5 md:gap-3 ph:grid-cols-2 ph:gap-2 dark:bg-zinc-900 pb-4">
-    <div class="hidden">
-      <h1 id="1" class="display:true">Visible</h1>
-      <h1 id="2" class="hidden">Invisible</h1>
-    </div>
-    <div v-for="entered in allNote" :key="entered" @click="viewNote(entered.id), toggleTitle = false" class="">
-      <div v-if="entered.deleted == null"
-        class=" container shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]  p-2 rounded-md mt-2 content-start break-words font-semibold hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)] dark:bg-zinc-900 dark:shadow-none dark:border-2 dark:border-gray-700">
-        <div v-if="Array.isArray(entered.description)">
-          {{ entered.title }}
-          <div v-for="entereds in entered.description" :key="entereds" class="grid grid-cols-12">
-            <input type="checkbox" :checked=entereds.checkBox
-              class="col-start-1 col-span-1 object-contain h-4 w-4 place-self-center mx-2 ">
-            <input type="text" :value=entereds.description
-              class="col-start-2 col-span-11 ml-1 font-normal dark:bg-zinc-900">
+      class="grid xl:grid-cols-7 xl:gap-4 md:grid-cols-5 md:gap-3 ph:grid-cols-2 ph:gap-2 dark:bg-zinc-900 pb-4">
+      <div class="hidden">
+        <h1 id="1" class="display:true">Visible</h1>
+        <h1 id="2" class="hidden">Invisible</h1>
+      </div>
+      <div v-for="entered in allNote" :key="entered" @click="viewNote(entered.id), toggleTitle = false" class="">
+        <div v-if="entered.deleted == null"
+          class=" container shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]  p-2 rounded-md mt-2 content-start break-words font-semibold hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)] dark:bg-zinc-900 dark:shadow-none dark:border-2 dark:border-gray-700">
+          <div v-if="Array.isArray(entered.description)">
+            {{ entered.title }}
+            <div v-for="entereds in entered.description" :key="entereds" class="grid grid-cols-12">
+              <input type="checkbox" :checked=entereds.checkBox
+                class="col-start-1 col-span-1 object-contain h-4 w-4 place-self-center mx-2 ">
+              <input type="text" :value=entereds.description
+                class="col-start-2 col-span-11 ml-1 font-normal dark:bg-zinc-900">
+            </div>
           </div>
-        </div>
-        <div v-else>
-          {{ entered.title }}
-          <p class="font-normal text-left dark:bg-zinc-900">{{ entered.description }}</p>
+          <div v-else>
+            {{ entered.title }}
+            <p class="font-normal text-left dark:bg-zinc-900">{{ entered.description }}</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  </div>
- 
 </template>
