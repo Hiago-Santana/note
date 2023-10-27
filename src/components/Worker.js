@@ -54,7 +54,7 @@ export async function logInCount(logEmail, logPassword) {
   //console.log("data",data)
 }
 
-export async function insertNote(title, description, token, id) {
+export async function insertNoteClound(title, description, token, id) {
   let result = null;
   let noteinsert;
 

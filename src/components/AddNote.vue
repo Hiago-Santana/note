@@ -57,8 +57,10 @@
 <script>
 import {addNoteIndexedDB} from './IndexedDB'
 import {formatDate, isJson} from './Tools'
+import {insertNoteClound} from './Worker'
 export default {
     props: ['token','idUser'],
+    emits: ['reload-note'],
     data() {
         return {
             toggleWidht: null,
@@ -105,7 +107,7 @@ export default {
 
                 if (navigator.onLine) {
                     try {
-                        resultCloundInsertNote = await insertNote(title, description.value, this.token, this.idUser)
+                        resultCloundInsertNote = await insertNoteClound(title, description.value, this.token, this.idUser)
                         console.log("resultCloundInsetNote", resultCloundInsertNote.res.noteinsert)
                         if (resultCloundInsertNote.res.noteinsert === true) {
                             const noteId = resultCloundInsertNote.res.lastNote.results[0].noteId;
@@ -154,6 +156,7 @@ export default {
             }
             //buttonEnterNote.value = false;
             this.enteredListDescription = []
+            this.$emit('reload-note')
 
         },
 

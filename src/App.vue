@@ -2,7 +2,7 @@
 import { isJson, formatDate } from './components/Tools'//import {getNoteIndexedDB} from './components/'
 import { onMounted } from 'vue';
 //import { addNote, getNoteIndexedDB, setNote } from './components/IndexedDB'
-import { getNoteIndexedDB } from './components/IndexedDB';
+import { getNoteIndexedDB, addNoteIndexedDB } from './components/IndexedDB';
 //import { syncCloundToIndexedDB } from './components/SyncNote.js'
 import Index from 'flexsearch';
 import { fromJSON } from 'postcss';
@@ -85,11 +85,11 @@ export default {
                 this.allNote = await getNoteIndexedDB(this.idUser);
               }
               if (lastUpdateclound < lastUpdateLocal) {
-                //await insertNote(title, description, token, id)
+                //await insertNoteClound(title, description, token, id)
                 //avaliar se é necessário criar ele aqui
               }
             } catch (error) {
-              await addNote(
+              await addNoteIndexedDB(
                 noteIdClound,
                 usersIdClound,
                 titleClound,
@@ -109,7 +109,7 @@ export default {
             descriptionClound = this.noteClound.description;
             lastUpdateclound = this.noteClound.lastUpdate;
             deletedClound = this.noteClound.deleted;
-            await addNote(
+            await addNoteIndexedDB(
               noteIdClound,
               usersIdClound,
               titleClound,
@@ -176,12 +176,12 @@ export default {
                 this.allNote = await getNoteIndexedDB(this.idUser);
               }
               if (lastUpdateclound < lastUpdateLocal) {
-                //await insertNote(title, description, token, id)
+                //await insertNoteClound(title, description, token, id)
                 //avaliar se é necessário criar ele aqui
               }
             } catch (error) {
 
-              await addNote(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
+              await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
               this.allNote = await getNoteIndexedDB(this.idUser);
               break
             }
@@ -194,7 +194,7 @@ export default {
             descriptionClound = this.allNoteClound.results[i].description;
             lastUpdateclound = this.allNoteClound.results[i].lastUpdate
             deletedClound = this.allNoteClound.results[i].deleted;
-            await addNote(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
+            await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
           }
 
           this.allNote = await getNoteIndexedDB(this.idUser);
@@ -212,7 +212,7 @@ export default {
             const idNoteLocal = noteNotInsertdClound.id
             const title = noteNotInsertdClound.title
             const description = noteNotInsertdClound.description
-            const notInsered = await insertNote(title, description, token.value, resultCloundLogin.userAuthentication.idUser)
+            const notInsered = await insertNoteClound(title, description, token.value, resultCloundLogin.userAuthentication.idUser)
 
             const idNotInserted = notInsered.res.lastNote.results[0].noteId
             const lastUpdateInsertedNote = notInsered.res.lastNote.results[0].lastUpdate
