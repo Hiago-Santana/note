@@ -7,9 +7,11 @@ import { getNoteIndexedDB, addNoteIndexedDB } from './components/IndexedDB';
 import Index from 'flexsearch';
 import { fromJSON } from 'postcss';
 import AddNote from './components/AddNote.vue';
+import { getNoteClound } from './components/Worker'
+import ShowAllNotes from './components/ShowAllNotes.vue';
 
 export default {
-  components: { AddNote },
+  components: { AddNote, ShowAllNotes },
 
   data() {
     return {
@@ -24,16 +26,24 @@ export default {
       toggleWidht: null,
       index: new Index({ tokenize: "full" }),
       idUser: null,
+      teste: false,
+      visibleNote: true,
 
       noteClound: [],
       noteIndexedDB: null
 
     }
   },
+
+  
   methods: {
     onMounted() {
       console.log("App token")
     },
+
+    hideAllNotes(visibleNote){
+      this.visibleNote = visibleNote
+    },   
 
     async syncCloundToIndexedDB(resultCloundLogin) {
       //this.resultCloundLogin = resultCloundLogin;
@@ -43,9 +53,9 @@ export default {
       let descriptionClound;
       let lastUpdateclound;
       let deletedClound;
-      
+
       this.noteClound = resultCloundLogin.note.results;
-      
+
       this.idUser = resultCloundLogin.idUser;
       console.log(this.idUser)
       this.noteIndexedDB = await getNoteIndexedDB(this.idUser);
@@ -126,175 +136,189 @@ export default {
       }
     },
 
-    async reloadNote(resultCloundLogin) {
-      //Get data from database and reload notes  
-      console.log("resultClound", resultCloundLogin)
-      this.resultCloundLogin = resultCloundLogin;
-      this.token = this.resultCloundLogin.token
-      this.logIn = this.resultCloundLogin.authentication
-      this.idUser = this.resultCloundLogin.idUser
-      this.allNote = await getNoteIndexedDB(this.idUser);
-      this.allNoteClound = resultCloundLogin.note;
+    setLogInformation(token, idUser, logIn) {
+      this.token = token;
+      this.logIn = logIn;
+      this.idUser = idUser;
+    },
 
-      let noteIdClound;
-      let usersIdClound;
-      let titleClound;
-      let descriptionClound;
-      let lastUpdateclound;
-      let deletedClound;
+    async reloadNote() {
 
-      let noteIdLocal;
-      let usersIdLocal;
-      let titleLocal;
-      let descriptionLocal;
-      let lastUpdateLocal;
-      let deletedLocal;
+      console.log("logIn", this.logIn)
+      if (this.logIn === true) {
+        //Get data from database and reload notes  
 
-      let noteNotInsertdClound;
+        //this.resultCloundLogin = resultCloundLogin;
+        //console.log("allNoteClound",allNoteClound)
+        // this.token = token;
+        // this.logIn = login;
+        // this.idUser = idUser;
+        this.allNote = await getNoteIndexedDB(this.idUser);
+        this.allNoteClound = await getNoteClound(this.token);
+        this.allNoteClound = this.allNoteClound.res.note.results
 
-      //sync
-      let sizeLocal = this.allNote.length;
-      const sizeClound = this.allNoteClound.results.length;
-      for (let i = 0; i < sizeClound; i++) {
-        noteIdClound = this.allNoteClound.results[i].noteId;
-        usersIdClound = this.allNoteClound.results[i].usersId;
-        titleClound = this.allNoteClound.results[i].title;
-        descriptionClound = this.allNoteClound.results[i].description;
-        lastUpdateclound = this.allNoteClound.results[i].lastUpdate
-        deletedClound = this.allNoteClound.results[i].deleted;
+        let noteIdClound;
+        let usersIdClound;
+        let titleClound;
+        let descriptionClound;
+        let lastUpdateclound;
+        let deletedClound;
 
-        //console.log("lastUpdateclound", lastUpdateclound)
-        if (sizeClound > 0 && sizeLocal > 0) {
-          for (let i = 0; i < sizeLocal; i++) {
+        let noteIdLocal;
+        let usersIdLocal;
+        let titleLocal;
+        let descriptionLocal;
+        let lastUpdateLocal;
+        let deletedLocal;
 
-            try {
-              lastUpdateLocal = this.allNote.find(Element => Element.noteId == noteIdClound).lastUpdate
+        let noteNotInsertdClound;
 
-              if (lastUpdateclound > lastUpdateLocal) {
-                noteIdLocal = this.allNote.find(Element => Element.noteId == noteIdClound).id
-                await setNote(noteIdLocal, noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
+        //sync
+        let sizeLocal = this.allNote.length;
+        //console.log("allNoteClound",this.allNoteClound.results)
+        const sizeClound = this.allNoteClound.length;
+        for (let i = 0; i < sizeClound; i++) {
+          noteIdClound = this.allNoteClound[i].noteId;
+          usersIdClound = this.allNoteClound[i].usersId;
+          titleClound = this.allNoteClound[i].title;
+          descriptionClound = this.allNoteClound[i].description;
+          lastUpdateclound = this.allNoteClound[i].lastUpdate
+          deletedClound = this.allNoteClound[i].deleted;
+
+          //console.log("lastUpdateclound", lastUpdateclound)
+          if (sizeClound > 0 && sizeLocal > 0) {
+            for (let i = 0; i < sizeLocal; i++) {
+
+              try {
+                lastUpdateLocal = this.allNote.find(Element => Element.noteId == noteIdClound).lastUpdate
+
+                if (lastUpdateclound > lastUpdateLocal) {
+                  noteIdLocal = this.allNote.find(Element => Element.noteId == noteIdClound).id
+                  await setNote(noteIdLocal, noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
+                  this.allNote = await getNoteIndexedDB(this.idUser);
+                }
+                if (lastUpdateclound < lastUpdateLocal) {
+                  //await insertNoteClound(title, description, token, id)
+                  //avaliar se é necessário criar ele aqui
+                }
+              } catch (error) {
+
+                await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
                 this.allNote = await getNoteIndexedDB(this.idUser);
+                break
               }
-              if (lastUpdateclound < lastUpdateLocal) {
-                //await insertNoteClound(title, description, token, id)
-                //avaliar se é necessário criar ele aqui
-              }
-            } catch (error) {
-
-              await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-              this.allNote = await getNoteIndexedDB(this.idUser);
-              break
             }
-          }
-        } else if (sizeClound > 0 && sizeLocal == 0) {
-          for (let i = 0; i < sizeClound; i++) {
-            noteIdClound = this.allNoteClound.results[i].noteId;
-            usersIdClound = this.allNoteClound.results[i].usersId;
-            titleClound = this.allNoteClound.results[i].title;
-            descriptionClound = this.allNoteClound.results[i].description;
-            lastUpdateclound = this.allNoteClound.results[i].lastUpdate
-            deletedClound = this.allNoteClound.results[i].deleted;
-            await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-          }
-
-          this.allNote = await getNoteIndexedDB(this.idUser);
-          sizeLocal = this.allNote.length;
-          break
-        }
-      }
-
-      //sync invertido
-      for (let i = 0; i < sizeLocal; i++) {
-        try {
-          noteNotInsertdClound = this.allNote.find(Element => Element.noteId == null)
-          if (noteNotInsertdClound != undefined) {
-
-            const idNoteLocal = noteNotInsertdClound.id
-            const title = noteNotInsertdClound.title
-            const description = noteNotInsertdClound.description
-            const notInsered = await insertNoteClound(title, description, token.value, resultCloundLogin.userAuthentication.idUser)
-
-            const idNotInserted = notInsered.res.lastNote.results[0].noteId
-            const lastUpdateInsertedNote = notInsered.res.lastNote.results[0].lastUpdate
-            const deletedInsertNote = notInsered.res.lastNote.results[0].deleted
-            console.log("idNotInserted", idNotInserted)
-            setNote(idNoteLocal, idNotInserted, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateInsertedNote, deletedInsertNote)
+          } else if (sizeClound > 0 && sizeLocal == 0) {
+            for (let i = 0; i < sizeClound; i++) {
+              noteIdClound = this.allNoteClound[i].noteId;
+              usersIdClound = this.allNoteClound[i].usersId;
+              titleClound = this.allNoteClound[i].title;
+              descriptionClound = this.allNoteClound[i].description;
+              lastUpdateclound = this.allNoteClound[i].lastUpdate
+              deletedClound = this.allNoteClound[i].deleted;
+              await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
+            }
 
             this.allNote = await getNoteIndexedDB(this.idUser);
-          } else {
-
-            noteIdLocal = this.allNote[i].noteId;
-            lastUpdateLocal = this.allNote[i].lastUpdate;
-            lastUpdateclound = this.allNoteClound.results.find(Element => Element.noteId == noteIdLocal).lastUpdate
-
-            if (lastUpdateLocal > lastUpdateclound) {
-
-              const idNoteLocal = this.allNote[i].id;
-              const title = this.allNote[i].title;
-              const description = this.allNote[i].description;
-              const deleted = this.allNote[i].deleted;
-              const updateNoteClound = await setNoteClound(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, deleted, token.value)
-
-              const lastUpdateSetClound = updateNoteClound.res.lastNote.results[0].lastUpdate
-              const deletedSetClound = updateNoteClound.res.lastNote.results[0].deleted
-              await setNote(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateSetClound, deletedSetClound);
-              this.allNote = await getNoteIndexedDB(this.idUser);
-
-            }
+            sizeLocal = this.allNote.length;
+            break
           }
-        } catch (error) { }
-      }
-
-      let allNoteTemporary = [];
-      for (let i = 0; i < sizeLocal; i++) {
-        if (this.allNote[i].deleted == null) {
-          const idt = this.allNote[i].id;
-          const noteIdt = this.allNote[i].noteId;
-          const usersIdt = this.allNote[i].usersId;
-          const titlet = this.allNote[i].title;
-          const descriptiont = this.allNote[i].description;
-          const lastUpdatet = this.allNote[i].lastUpdate;
-          const deletedt = this.allNote[i].deleted;
-
-          allNoteTemporary.push({ id: idt, noteId: noteIdt, usersId: usersIdt, title: titlet, description: descriptiont, lastUpdate: lastUpdatet, deleted: deletedt })
         }
-      }
-      this.allNote = allNoteTemporary;
-      sizeLocal = this.allNote.length;
 
-      for (let i = 0; i < sizeLocal; i++) {
-        const title = this.allNote[i].title;
-        let description = null;
-        description = this.allNote[i].description;
-        const jsonTeste = isJson(description)
-        const id = this.allNote[i].id;
+        //sync invertido
+        for (let i = 0; i < sizeLocal; i++) {
+          try {
+            noteNotInsertdClound = this.allNote.find(Element => Element.noteId == null)
+            if (noteNotInsertdClound != undefined) {
 
-        if (jsonTeste) {
-          description = JSON.parse(description)
-          this.allNote[i].description = description
+              const idNoteLocal = noteNotInsertdClound.id
+              const title = noteNotInsertdClound.title
+              const description = noteNotInsertdClound.description
+              const notInsered = await insertNoteClound(title, description, this.token, resultCloundLogin.userAuthentication.idUser)
+
+              const idNotInserted = notInsered.res.lastNote.results[0].noteId
+              const lastUpdateInsertedNote = notInsered.res.lastNote.results[0].lastUpdate
+              const deletedInsertNote = notInsered.res.lastNote.results[0].deleted
+              console.log("idNotInserted", idNotInserted)
+              setNote(idNoteLocal, idNotInserted, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateInsertedNote, deletedInsertNote)
+
+              this.allNote = await getNoteIndexedDB(this.idUser);
+            } else {
+
+              noteIdLocal = this.allNote[i].noteId;
+              lastUpdateLocal = this.allNote[i].lastUpdate;
+              lastUpdateclound = this.allNoteClound.find(Element => Element.noteId == noteIdLocal).lastUpdate
+
+              if (lastUpdateLocal > lastUpdateclound) {
+
+                const idNoteLocal = this.allNote[i].id;
+                const title = this.allNote[i].title;
+                const description = this.allNote[i].description;
+                const deleted = this.allNote[i].deleted;
+                const updateNoteClound = await setNoteClound(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, deleted, this.token)
+
+                const lastUpdateSetClound = updateNoteClound.res.lastNote.results[0].lastUpdate
+                const deletedSetClound = updateNoteClound.res.lastNote.results[0].deleted
+                await setNote(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateSetClound, deletedSetClound);
+                this.allNote = await getNoteIndexedDB(this.idUser);
+
+              }
+            }
+          } catch (error) { }
         }
-        this.index.add(id, title);
-        this.index.append(id, description)
-      }
 
-      if (sizeLocal == 0) {
-        this.noNote = true;
-      }
+        let allNoteTemporary = [];
+        for (let i = 0; i < sizeLocal; i++) {
+          if (this.allNote[i].deleted == null) {
+            const idt = this.allNote[i].id;
+            const noteIdt = this.allNote[i].noteId;
+            const usersIdt = this.allNote[i].usersId;
+            const titlet = this.allNote[i].title;
+            const descriptiont = this.allNote[i].description;
+            const lastUpdatet = this.allNote[i].lastUpdate;
+            const deletedt = this.allNote[i].deleted;
+
+            allNoteTemporary.push({ id: idt, noteId: noteIdt, usersId: usersIdt, title: titlet, description: descriptiont, lastUpdate: lastUpdatet, deleted: deletedt })
+          }
+        }
+        this.allNote = allNoteTemporary;
+        sizeLocal = this.allNote.length;
+
+        for (let i = 0; i < sizeLocal; i++) {
+          const title = this.allNote[i].title;
+          let description = null;
+          description = this.allNote[i].description;
+          const jsonTeste = isJson(description)
+          const id = this.allNote[i].id;
+
+          if (jsonTeste) {
+            description = JSON.parse(description)
+            this.allNote[i].description = description
+          }
+          this.index.add(id, title);
+          this.index.append(id, description)
+        }
+
+        if (sizeLocal == 0) {
+          this.noNote = true;
+        }
+
+
+      } else { }
     },
   },
 }
 </script>
 <template>
-  <login-sign-up @call-reload-note="reloadNote"></login-sign-up>
-  <div v-if="logIn">
-    <add-note 
-    :token="token"
-    :id-user="idUser"
-    ></add-note>
-  </div>
-  
-  <!-- view saved notes -->
-  <div v-if="logIn">
+  <div class=" h-screen dark:bg-zinc-900">
+    <login-sign-up @set-log-information="setLogInformation" @call-reload-note="reloadNote"></login-sign-up>
+    <div v-if="logIn">
+      <add-note :token="token" :id-user="idUser" @reload-note="reloadNote" @visible-notes="hideAllNotes"></add-note>
+    </div>
+
+    <!-- view saved notes -->
+    <show-notes v-if="visibleNote" :allNote="allNote"></show-notes>
+    <!-- <div v-if="logIn">
     <div v-if="!toggleModal || toggleModal && !toggleWidht"
       class="grid xl:grid-cols-7 xl:gap-4 md:grid-cols-5 md:gap-3 ph:grid-cols-2 ph:gap-2 dark:bg-zinc-900 pb-4">
       <div class="hidden">
@@ -320,5 +344,6 @@ export default {
         </div>
       </div>
     </div>
+  </div> -->
   </div>
 </template>

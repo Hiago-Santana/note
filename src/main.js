@@ -3,6 +3,8 @@ import './style.css'
 import App from './App.vue'
 import LogInSignUp from './components/LogInSignUp.vue'
 import AddNote from './components/AddNote.vue'
+import ShowAllNotes from './components/ShowAllNotes.vue'
+import AccessOneNote from './components/AccessOneNote.vue'
 
 //import icons
 /* import the fontawesome core */
@@ -24,6 +26,9 @@ library.add(faUserSecret, faXmark, faTrash, faCirclePlus, faArrowLeft, faListChe
 const app = createApp(App);
 app.component('login-sign-up', LogInSignUp);
 app.component('add-note', AddNote);
+app.component('show-notes', ShowAllNotes);
+app.component('access-note', AccessOneNote)
+
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.mount('#app')

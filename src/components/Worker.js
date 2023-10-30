@@ -115,3 +115,26 @@ export async function setNoteClound(
     console.log("Error:", error);
   }
 }
+
+export async function getNoteClound(token) {
+  let result = null;
+  try {
+    const data = {
+      type: "getNote",
+      token: token,
+    };
+    const response = await fetch(api_url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    result = await response.json();
+    //console.log("Success:", result);
+    return result;
+  } catch (error) {
+    console.log("Error:", error);
+  }
+}

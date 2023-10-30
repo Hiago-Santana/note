@@ -3,7 +3,7 @@ import  {createAcount, logInCount} from './Worker'
 //import { reloadNote } from '../App.vue'
 
 export default {
-    emits:["call-reload-note"],
+    emits:["set-log-information","call-reload-note"],
     data() {
         return {
             logIn: false,
@@ -16,6 +16,7 @@ export default {
             newUserPassword: null,
             newUserName: null,
             resultCloundLogin: null,
+            
         }
     },
     methods: {
@@ -42,10 +43,14 @@ export default {
 
             this.resultCloundLogin = await logInCount(logEmail, logPassword)
             if (this.resultCloundLogin.userAuthentication.authentication == true) {
-                this.logIn = true;
+                this.logIn = this.resultCloundLogin.userAuthentication.authentication;
                 this.token = this.resultCloundLogin.userAuthentication.token
-                //console.log("Login Token", this.resultCloundLogin.userAuthentication);
-                this.$emit("call-reload-note", this.resultCloundLogin.userAuthentication)
+                const idUser = this.resultCloundLogin.userAuthentication.idUser
+                //const allNoteClound = this.resultCloundLogin.userAuthentication.note
+                //console.log("logIn", this.logIn);
+                this.$emit("set-log-information",this.token, idUser, this.logIn)
+                this.$emit("call-reload-note");
+                
                 //reloadNote()
             }
         }
@@ -55,8 +60,8 @@ export default {
 </script>
 
 <template>
-    <section>
-        <div v-if="!logIn && !buttonSignUpLogIn" class="grid content-end mx-8 h-full">
+    <section class="">
+        <div v-if="!logIn && !buttonSignUpLogIn" class="grid grip-cols-3 content-end mx-8 h-screen w-1/4">
             <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
             <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
             <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Log in</button>
