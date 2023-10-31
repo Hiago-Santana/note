@@ -28,6 +28,10 @@ export default {
       idUser: null,
       teste: false,
       visibleNote: true,
+      idAccessedNote: null,
+      visibleAddNote: false,
+      toggleWidht: null,
+      screenWidth: null,
 
       noteClound: [],
       noteIndexedDB: null
@@ -35,15 +39,33 @@ export default {
     }
   },
 
-  
+
   methods: {
     onMounted() {
       console.log("App token")
+      window.addEventListener('resize', this.toggleScreen),
+        this.toggleScreen();
     },
 
-    hideAllNotes(visibleNote){
-      this.visibleNote = visibleNote
-    },   
+    showAccessedNote(id) {
+      this.idAccessedNote = id
+    },
+
+    hideAllNotes(visibleNote) {
+      this.visibleNote = visibleNote;
+      this.visibleAddNote = visibleNote;
+    },
+
+    toggleScreen() {
+      this.screenWidth = window.innerWidth;
+      if (this.screenWidth < 500) {
+        this.toggleWidht = true;
+
+      } else {
+        this.toggleWidht = false;
+
+      }
+    },
 
     async syncCloundToIndexedDB(resultCloundLogin) {
       //this.resultCloundLogin = resultCloundLogin;
@@ -140,6 +162,7 @@ export default {
       this.token = token;
       this.logIn = logIn;
       this.idUser = idUser;
+      this.visibleAddNote = true;
     },
 
     async reloadNote() {
@@ -312,12 +335,16 @@ export default {
 <template>
   <div class=" h-screen dark:bg-zinc-900">
     <login-sign-up @set-log-information="setLogInformation" @call-reload-note="reloadNote"></login-sign-up>
-    <div v-if="logIn">
-      <add-note :token="token" :id-user="idUser" @reload-note="reloadNote" @visible-notes="hideAllNotes"></add-note>
+    <div v-if="visibleAddNote">
+      <add-note :token="token" :id-user="idUser" :toggle-widht="toggleWidht" @reload-note="reloadNote" @visible-notes="hideAllNotes"></add-note>
     </div>
 
     <!-- view saved notes -->
-    <show-notes v-if="visibleNote" :allNote="allNote"></show-notes>
+    <show-all-notes v-if="visibleNote" :allNote="allNote" @show-accessed-note="showAccessedNote"
+      @visible-notes="hideAllNotes"></show-all-notes>
+    <accessed-note v-if="idAccessedNote != null" :idAccessedNote="idAccessedNote" :allNote="allNote"
+      @show-accessed-note="showAccessedNote" @visible-notes="hideAllNotes"></accessed-note>
+
     <!-- <div v-if="logIn">
     <div v-if="!toggleModal || toggleModal && !toggleWidht"
       class="grid xl:grid-cols-7 xl:gap-4 md:grid-cols-5 md:gap-3 ph:grid-cols-2 ph:gap-2 dark:bg-zinc-900 pb-4">

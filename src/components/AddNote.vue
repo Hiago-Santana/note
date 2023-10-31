@@ -1,4 +1,5 @@
 <template>
+    {{ toggleWidht }}
     <div class="w-full flex flex-col dark:bg-zinc-900 p-[2rem] py-0 pt-2">
         <div v-if="!toggleWidht" class="flex justify-center ">
             <div
@@ -116,12 +117,12 @@ import { addNoteIndexedDB } from './IndexedDB'
 import { formatDate, isJson } from './Tools'
 import { insertNoteClound } from './Worker'
 export default {
-    props: ['token', 'idUser'],
+    props: ['token', 'idUser','toggleWidht'],
     emits: ['reload-note','visible-notes'],
     data() {
         return {
-            toggleWidht: null,
-            screenWidth: null,
+            // toggleWidht: null,
+            // screenWidth: null,
             toggleTitle: false,
             descriptionList: false,
             enteredTitle: null,
@@ -136,16 +137,16 @@ export default {
         }
     },
     methods: {
-        toggleScreen() {
-            this.screenWidth = window.innerWidth;
-            if (this.screenWidth < 500) {
-                this.toggleWidht = true;
+        // toggleScreen() {
+        //     this.screenWidth = window.innerWidth;
+        //     if (this.screenWidth < 500) {
+        //         this.toggleWidht = true;
                 
-            } else {
-                this.toggleWidht = false;
+        //     } else {
+        //         this.toggleWidht = false;
                                
-            }
-        },
+        //     }
+        // },
 
         async addTitleDescription() {
             //Add title and description to database
@@ -249,10 +250,10 @@ export default {
 
 
     },
-    mounted() {
-        window.addEventListener('resize', this.toggleScreen),
-            this.toggleScreen();
-    }
+    // mounted() {
+    //     window.addEventListener('resize', this.toggleScreen),
+    //         this.toggleScreen();
+    // }
 
 
 }

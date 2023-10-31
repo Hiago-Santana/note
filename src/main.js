@@ -26,8 +26,8 @@ library.add(faUserSecret, faXmark, faTrash, faCirclePlus, faArrowLeft, faListChe
 const app = createApp(App);
 app.component('login-sign-up', LogInSignUp);
 app.component('add-note', AddNote);
-app.component('show-notes', ShowAllNotes);
-app.component('access-note', AccessOneNote)
+app.component('show-all-notes', ShowAllNotes);
+app.component('accessed-note', AccessOneNote)
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 
