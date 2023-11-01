@@ -5,7 +5,7 @@
             <button class="place-self-start"
                 @click="editeNote(), $emit('reload-note'), toggleModal = false, addChecKBox = false, $emit('visible-notes', true), $emit('show-accessed-note', null)"><font-awesome-icon
                     icon="fa-solid fa-arrow-left" /></button>
-            <button @click="toggleModal = false, editeNote(null, 'deleted')" class="place-self-end"><font-awesome-icon
+            <button @click="toggleModal = false, editeNote(null, 'deleted'),$emit('reload-note'), $emit('visible-notes', true), $emit('show-accessed-note')" class="place-self-end"><font-awesome-icon
                     icon="fa-solid fa-trash" style="color: #707070;" />
             </button>
         </div>
@@ -108,7 +108,8 @@ export default {
 
         async editeNote(deleteItemFromList, deleteNote) {
             //Edite note
-            if (deleteNote == "deleted") {
+            console.log("token",this.token)
+            if (this.deleteNote == "deleted") {
                 const id = this.indexNote.id;
                 const noteId = this.indexNote.noteId
                 const usersId = this.indexNote.usersId
@@ -120,7 +121,7 @@ export default {
                 console.log("noteId removeNote", noteId)
 
                 try {
-                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, deleteNote, token);
+                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, this.deleteNote, token);
                     const deleted = noteSeted.res.lastNote.results[0].deleted;
                     const update = noteSeted.res.lastNote.results[0].lastUpdate;
                     await setNoteIndexedDB(id, noteId, usersId, title, description, update, deleted);
@@ -151,7 +152,7 @@ export default {
                     const checkBox = this.checkedBox;
                     this.indexNote.description.push({ checkBox: checkBox, description: this.enteredDescription });
                     this.enteredDescription = null;
-                    toggleModal.value = true;
+                    //toggleModal.value = true;
                 }
 
                 const noteId = this.indexNote.noteId;
@@ -170,7 +171,7 @@ export default {
                 this.checkedBox = false;
 
                 try {
-                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, deleteNote, token);
+                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, this.deleteNote, token);
                     const update = noteSeted.res.lastNote.results[0].lastUpdate;
                     await setNoteIndexedDB(id, noteId, usersId, title, description, update, deleted);
                 } catch (error) {
