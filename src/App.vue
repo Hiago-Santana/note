@@ -1,6 +1,5 @@
 <script>
 import { isJson, formatDate } from './components/Tools'//import {getNoteIndexedDB} from './components/'
-import { onMounted } from 'vue';
 //import { addNote, getNoteIndexedDB, setNote } from './components/IndexedDB'
 import { getNoteIndexedDB, addNoteIndexedDB } from './components/IndexedDB';
 //import { syncCloundToIndexedDB } from './components/SyncNote.js'
@@ -30,8 +29,9 @@ export default {
       visibleNote: true,
       idAccessedNote: null,
       visibleAddNote: false,
-      toggleWidht: null,
+      toggleWidht: 'null',
       screenWidth: null,
+      allNoteIndexedDB: null,
 
       noteClound: [],
       noteIndexedDB: null
@@ -39,13 +39,13 @@ export default {
     }
   },
 
-
-  methods: {
-    onMounted() {
-      console.log("App token")
+ mounted() {
       window.addEventListener('resize', this.toggleScreen),
         this.toggleScreen();
     },
+
+  methods: {
+   
 
     showAccessedNote(id) {
       this.idAccessedNote = id
@@ -166,7 +166,6 @@ export default {
     },
 
     async reloadNote() {
-
       console.log("logIn", this.logIn)
       if (this.logIn === true) {
         //Get data from database and reload notes  
@@ -176,7 +175,7 @@ export default {
         // this.token = token;
         // this.logIn = login;
         // this.idUser = idUser;
-        this.allNote = await getNoteIndexedDB(this.idUser);
+        this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
         this.allNoteClound = await getNoteClound(this.token);
         this.allNoteClound = this.allNoteClound.res.note.results
 
@@ -197,7 +196,7 @@ export default {
         let noteNotInsertdClound;
 
         //sync
-        let sizeLocal = this.allNote.length;
+        let sizeLocal = this.allNoteIndexedDB.length;
         //console.log("allNoteClound",this.allNoteClound.results)
         const sizeClound = this.allNoteClound.length;
         for (let i = 0; i < sizeClound; i++) {
@@ -213,12 +212,12 @@ export default {
             for (let i = 0; i < sizeLocal; i++) {
 
               try {
-                lastUpdateLocal = this.allNote.find(Element => Element.noteId == noteIdClound).lastUpdate
+                lastUpdateLocal = this.allNoteIndexedDB.find(Element => Element.noteId == noteIdClound).lastUpdate
 
                 if (lastUpdateclound > lastUpdateLocal) {
-                  noteIdLocal = this.allNote.find(Element => Element.noteId == noteIdClound).id
+                  noteIdLocal = this.allNoteIndexedDB.find(Element => Element.noteId == noteIdClound).id
                   await setNote(noteIdLocal, noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-                  this.allNote = await getNoteIndexedDB(this.idUser);
+                  this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
                 }
                 if (lastUpdateclound < lastUpdateLocal) {
                   //await insertNoteClound(title, description, token, id)
@@ -227,7 +226,7 @@ export default {
               } catch (error) {
 
                 await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
-                this.allNote = await getNoteIndexedDB(this.idUser);
+                this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
                 break
               }
             }
@@ -242,8 +241,8 @@ export default {
               await addNoteIndexedDB(noteIdClound, usersIdClound, titleClound, descriptionClound, lastUpdateclound, deletedClound)
             }
 
-            this.allNote = await getNoteIndexedDB(this.idUser);
-            sizeLocal = this.allNote.length;
+            this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
+            sizeLocal = this.allNoteIndexedDB.length;
             break
           }
         }
@@ -251,7 +250,7 @@ export default {
         //sync invertido
         for (let i = 0; i < sizeLocal; i++) {
           try {
-            noteNotInsertdClound = this.allNote.find(Element => Element.noteId == null)
+            noteNotInsertdClound = this.allNoteIndexedDB.find(Element => Element.noteId == null)
             if (noteNotInsertdClound != undefined) {
 
               const idNoteLocal = noteNotInsertdClound.id
@@ -265,25 +264,25 @@ export default {
               console.log("idNotInserted", idNotInserted)
               setNote(idNoteLocal, idNotInserted, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateInsertedNote, deletedInsertNote)
 
-              this.allNote = await getNoteIndexedDB(this.idUser);
+              this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
             } else {
 
-              noteIdLocal = this.allNote[i].noteId;
-              lastUpdateLocal = this.allNote[i].lastUpdate;
+              noteIdLocal = this.allNoteIndexedDB[i].noteId;
+              lastUpdateLocal = this.allNoteIndexedDB[i].lastUpdate;
               lastUpdateclound = this.allNoteClound.find(Element => Element.noteId == noteIdLocal).lastUpdate
 
               if (lastUpdateLocal > lastUpdateclound) {
 
-                const idNoteLocal = this.allNote[i].id;
-                const title = this.allNote[i].title;
-                const description = this.allNote[i].description;
-                const deleted = this.allNote[i].deleted;
+                const idNoteLocal = this.allNoteIndexedDB[i].id;
+                const title = this.allNoteIndexedDB[i].title;
+                const description = this.allNoteIndexedDB[i].description;
+                const deleted = this.allNoteIndexedDB[i].deleted;
                 const updateNoteClound = await setNoteClound(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, deleted, this.token)
 
                 const lastUpdateSetClound = updateNoteClound.res.lastNote.results[0].lastUpdate
                 const deletedSetClound = updateNoteClound.res.lastNote.results[0].deleted
                 await setNote(idNoteLocal, noteIdLocal, resultCloundLogin.userAuthentication.idUser, title, description, lastUpdateSetClound, deletedSetClound);
-                this.allNote = await getNoteIndexedDB(this.idUser);
+                this.allNoteIndexedDB= await getNoteIndexedDB(this.idUser);
 
               }
             }
@@ -292,14 +291,14 @@ export default {
 
         let allNoteTemporary = [];
         for (let i = 0; i < sizeLocal; i++) {
-          if (this.allNote[i].deleted == null) {
-            const idt = this.allNote[i].id;
-            const noteIdt = this.allNote[i].noteId;
-            const usersIdt = this.allNote[i].usersId;
-            const titlet = this.allNote[i].title;
-            const descriptiont = this.allNote[i].description;
-            const lastUpdatet = this.allNote[i].lastUpdate;
-            const deletedt = this.allNote[i].deleted;
+          if (this.allNoteIndexedDB[i].deleted == null) {
+            const idt = this.allNoteIndexedDB[i].id;
+            const noteIdt = this.allNoteIndexedDB[i].noteId;
+            const usersIdt = this.allNoteIndexedDB[i].usersId;
+            const titlet = this.allNoteIndexedDB[i].title;
+            const descriptiont = this.allNoteIndexedDB[i].description;
+            const lastUpdatet = this.allNoteIndexedDB[i].lastUpdate;
+            const deletedt = this.allNoteIndexedDB[i].deleted;
 
             allNoteTemporary.push({ id: idt, noteId: noteIdt, usersId: usersIdt, title: titlet, description: descriptiont, lastUpdate: lastUpdatet, deleted: deletedt })
           }
@@ -342,8 +341,8 @@ export default {
     <!-- view saved notes -->
     <show-all-notes v-if="visibleNote" :allNote="allNote" @show-accessed-note="showAccessedNote"
       @visible-notes="hideAllNotes"></show-all-notes>
-    <accessed-note v-if="idAccessedNote != null" :idAccessedNote="idAccessedNote" :allNote="allNote"
-      @show-accessed-note="showAccessedNote" @visible-notes="hideAllNotes"></accessed-note>
+    <accessed-note v-if="idAccessedNote != null" :idAccessedNote="idAccessedNote" :allNote="allNote" :token="token"
+      @show-accessed-note="showAccessedNote" @visible-notes="hideAllNotes" @reload-note="reloadNote"></accessed-note>
 
     <!-- <div v-if="logIn">
     <div v-if="!toggleModal || toggleModal && !toggleWidht"

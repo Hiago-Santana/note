@@ -1,5 +1,4 @@
 <template>
-    {{ toggleWidht }}
     <div class="w-full flex flex-col dark:bg-zinc-900 p-[2rem] py-0 pt-2">
         <div v-if="!toggleWidht" class="flex justify-center ">
             <div
@@ -250,10 +249,11 @@ export default {
 
 
     },
-    // mounted() {
-    //     window.addEventListener('resize', this.toggleScreen),
-    //         this.toggleScreen();
-    // }
+    mounted() {
+        // window.addEventListener('resize', this.toggleScreen),
+        //     this.toggleScreen();
+       // console.log("App token")
+    }
 
 
 }

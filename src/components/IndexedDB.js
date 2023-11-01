@@ -78,7 +78,7 @@ export async function getNoteIndexedDB(idUser) {
 //     db.delete("note", id);
 //   }
 
-export async function setNote(
+export async function setNoteIndexedDB(
   id,
   noteId,
   usersId,
