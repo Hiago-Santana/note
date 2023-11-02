@@ -3,9 +3,9 @@
     <div class="p-[2rem]">
         <div class="grid grid-cols-2">
             <button class="place-self-start"
-                @click="editeNote(), $emit('reload-note'), toggleModal = false, addChecKBox = false, $emit('visible-notes', true), $emit('show-accessed-note', null)"><font-awesome-icon
+                @click="editeNote(), toggleModal = false, addChecKBox = false"><font-awesome-icon
                     icon="fa-solid fa-arrow-left" /></button>
-            <button @click="toggleModal = false, editeNote(null, 'deleted'),$emit('reload-note'), $emit('visible-notes', true), $emit('show-accessed-note')" class="place-self-end"><font-awesome-icon
+            <button @click="toggleModal = false, editeNote(null, 'deleted')" class="place-self-end"><font-awesome-icon
                     icon="fa-solid fa-trash" style="color: #707070;" />
             </button>
         </div>
@@ -20,8 +20,9 @@
                 <input type="text" :value=entered.description v-on:keyup.enter="indexNote.description[0].description"
                     @input="event => indexNote.description[index].description = event.target.value"
                     class="col-start-2 col-span-10 focus:outline-none dark:bg-zinc-900">
-                <button @click="editeNote(deleteItemFromList = index)" class="invisible group-hover/item:visible "><font-awesome-icon
-                        icon="fa-solid fa-x" class="col-end-7 col-span-1" /></button>
+                <button @click="editeNote(deleteItemFromList = index)"
+                    class="invisible group-hover/item:visible "><font-awesome-icon icon="fa-solid fa-x"
+                        class="col-end-7 col-span-1" /></button>
             </div>
 
             <div class="grid grid-cols-12">
@@ -64,7 +65,7 @@ import { formatDate, isJson } from './Tools'
 export default {
     mounted() { this.viewNote(this.idAccessedNote, this.allNote) },
     props: ['idAccessedNote', 'allNote', 'token'],
-    emits: ['visible-notes', 'show-accessed-note', 'reload-note'],
+    emits: ['visible-notes', 'show-accessed-note', 'reload-note', 'remove-note-index'],
     data() {
         return {
             indexNote: [],
@@ -108,33 +109,41 @@ export default {
 
         async editeNote(deleteItemFromList, deleteNote) {
             //Edite note
-            console.log("token",this.token)
-            if (this.deleteNote == "deleted") {
+            console.log("token", this.token)
+            if (deleteNote == "deleted") {
                 const id = this.indexNote.id;
                 const noteId = this.indexNote.noteId
                 const usersId = this.indexNote.usersId
                 const title = this.indexNote.title
-                const description = this.indexNote.description
+                let description = this.indexNote.description
                 const lastUpdate = this.indexNote.lastUpdate
+                let jsonTeste = isJson(description)
+                if (!jsonTeste) {
+                    description = JSON.stringify(description)
+                }
+
                 // const tokenUser = token
                 console.log("description editeNote = Deleted", description)
                 console.log("noteId removeNote", noteId)
 
                 try {
-                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, this.deleteNote, token);
+                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, deleteNote, this.token);
                     const deleted = noteSeted.res.lastNote.results[0].deleted;
                     const update = noteSeted.res.lastNote.results[0].lastUpdate;
                     await setNoteIndexedDB(id, noteId, usersId, title, description, update, deleted);
                 } catch (error) {
                     const dateNow = new Date();
                     const lastUpdate = formatDate(dateNow, "yyyy-mmm-dd hh:mm:ss");
+                    const deleted = lastUpdate;
                     await setNoteIndexedDB(id, noteId, usersId, title, description, lastUpdate, deleted)
 
                 }
 
                 // deleteNote(id);
-                index.remove(id); // to send app
-                await reloadNote(); // to send app
+                //index.remove(id); // to send app
+                //this.$emit('remove-note-index',id)
+                //this.$emit('reload-note')
+                //await reloadNote(); // to send app
                 //valueSearchCopy.value = null;
                 //searchNote();
                 //toggleModal.value = false;
@@ -171,7 +180,7 @@ export default {
                 this.checkedBox = false;
 
                 try {
-                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, this.deleteNote, token);
+                    const noteSeted = await setNoteClound(id, noteId, usersId, title, description, deleteNote, this.token);
                     const update = noteSeted.res.lastNote.results[0].lastUpdate;
                     await setNoteIndexedDB(id, noteId, usersId, title, description, update, deleted);
                 } catch (error) {
@@ -183,6 +192,9 @@ export default {
                 //searchNote();
                 this.enteredDescription = null;
             }
+            this.$emit('reload-note')
+            this.$emit('visible-notes', true)
+            this.$emit('show-accessed-note')
         }
     }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="w-full flex flex-col dark:bg-zinc-900 p-[2rem] py-0 pt-2">
-        <div v-if="!toggleWidht" class="flex justify-center ">
+        <div v-if="!toggleWidht && visibleNote" class="flex justify-center ">
             <div
                 class="w-[30rem] shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)] hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)] px-4 py-2 rounded-md dark:bg-zinc-900 mb-2">
                 <div v-if="toggleTitle" class="grid grid-cols-3">
@@ -103,6 +103,7 @@
                 placeholder="Nota" required style=""></textarea>
         </div>
 
+        <!-- button to enter note when width screen is smaller than 500px -->
         <footer v-if="toggleWidht && showButtonEnterNote" class=" fixed bottom-0 rigth-0 pb-4 place-self-end">
             <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
                     size="2xl" />
@@ -116,7 +117,7 @@ import { addNoteIndexedDB } from './IndexedDB'
 import { formatDate, isJson } from './Tools'
 import { insertNoteClound } from './Worker'
 export default {
-    props: ['token', 'idUser','toggleWidht'],
+    props: ['token', 'idUser','toggleWidht', 'visibleNote'],
     emits: ['reload-note','visible-notes'],
     data() {
         return {
@@ -151,7 +152,8 @@ export default {
             //Add title and description to database
             const title = this.enteredTitle;
             const description = { 'value': null };
-
+            let resultCloundInsertNote;
+            console.log("descriptionList",this.descriptionList)
             if (this.descriptionList == true) {
                 if (this.enteredDescription != null && this.enteredDescription != "") {
                     this.enteredListDescription.push({ checkBox: this.checkedBoxListDescription, description: this.enteredDescription });

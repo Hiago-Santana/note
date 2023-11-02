@@ -1,82 +1,161 @@
-import { getNoteIndexedDB } from "./IndexedDB";
+import {
+  getNoteIndexedDB,
+  addNoteIndexedDB,
+  setNoteIndexedDB,
+} from "./IndexedDB";
+import { getNoteClound } from "./Worker";
 
-export async function syncCloundToIndexedDB(resultCloundLogin) {
-    console.log(resultCloundLogin)
-    const noteClound = resultCloundLogin.note;
-    const idUser = resultCloundLogin.idUser;
-  const noteIndexedDB = await getNoteIndexedDB(idUser);
-
-  let sizeIndexedDB = this.sizeIndexedDB.length;
-  const sizeClound = noteClound.results.length;
-  
+export async function syncCloundToIndexedDB(idUser, token) {
+  let allNoteClound = await getNoteClound(token);
+  allNoteClound = allNoteClound.res.note.results;
+  let allNoteIndexedDB = await getNoteIndexedDB(idUser);
+  console.log("teste", allNoteClound.length);
+  let sizeClound = allNoteClound.length;
+  let sizeIndexedDB = allNoteIndexedDB.length;
+  let findNoteId;
   for (let i = 0; i < sizeClound; i++) {
-    noteIdClound = noteClound.results[i].noteId;
-    usersIdClound = noteClound.results[i].usersId;
-    titleClound = noteClound.results[i].title;
-    descriptionClound = noteClound.results[i].description;
-    lastUpdateclound = noteClound.results[i].lastUpdate;
-    deletedClound = noteClound.results[i].deleted;
+    let noteIdClound = allNoteClound[i].noteId;
+    let usersIdClound = allNoteClound[i].usersId;
+    let titleClound = allNoteClound[i].title;
+    let descriptionClound = allNoteClound[i].description;
+    let lastUpdateClound = allNoteClound[i].lastUpdate;
+    let deletedClound = allNoteClound[i].deleted;
 
-    //console.log("lastUpdateclound", lastUpdateclound)
     if (sizeClound > 0 && sizeIndexedDB > 0) {
       for (let i = 0; i < sizeIndexedDB; i++) {
         try {
-          lastUpdateLocal = this.sizeIndexedDB.find(
+          findNoteId = allNoteIndexedDB.find(
             (Element) => Element.noteId == noteIdClound
-          ).lastUpdate;
-
-          if (lastUpdateclound > lastUpdateLocal) {
-            noteIdLocal = this.sizeIndexedDB.find(
-              (Element) => Element.noteId == noteIdClound
-            ).id;
-            await setNote(
+          );
+        } catch (error) {
+          findNoteId = "error500";
+        }
+        if (findNoteId != undefined) {
+          let lastUpdateLocal = findNoteId.lastUpdate;
+          let noteIdLocal = findNoteId.id;
+          if (lastUpdateClound > lastUpdateLocal) {
+            //const noteIdLocal = allNoteIndexedDB.find(Element => Element.noteId == noteIdClound).id
+            await setNoteIndexedDB(
               noteIdLocal,
               noteIdClound,
               usersIdClound,
               titleClound,
               descriptionClound,
-              lastUpdateclound,
+              lastUpdateClound,
               deletedClound
             );
-            this.allNote = await getNoteIndexedDB(this.idUser);
+            //this.allNoteIndexedDB = await getNoteIndexedDB(this.idUser);
           }
-          if (lastUpdateclound < lastUpdateLocal) {
-            //await insertNote(title, description, token, id)
-            //avaliar se é necessário criar ele aqui
-          }
-        } catch (error) {
-          await addNote(
+        } else {
+          await addNoteIndexedDB(
             noteIdClound,
             usersIdClound,
             titleClound,
             descriptionClound,
-            lastUpdateclound,
+            lastUpdateClound,
             deletedClound
           );
-          this.allNote = await getNoteIndexedDB(this.idUser);
           break;
         }
       }
     } else if (sizeClound > 0 && sizeIndexedDB == 0) {
       for (let i = 0; i < sizeClound; i++) {
-        noteIdClound = noteClound.results[i].noteId;
-        usersIdClound = noteClound.results[i].usersId;
-        titleClound = noteClound.results[i].title;
-        descriptionClound = noteClound.results[i].description;
-        lastUpdateclound = noteClound.results[i].lastUpdate;
-        deletedClound = noteClound.results[i].deleted;
-        await addNote(
+        noteIdClound = allNoteClound[i].noteId;
+        usersIdClound = allNoteClound[i].usersId;
+        titleClound = allNoteClound[i].title;
+        descriptionClound = allNoteClound[i].description;
+        lastUpdateClound = allNoteClound[i].lastUpdate;
+        deletedClound = allNoteClound[i].deleted;
+        await addNoteIndexedDB(
           noteIdClound,
           usersIdClound,
           titleClound,
           descriptionClound,
-          lastUpdateclound,
+          lastUpdateClound,
           deletedClound
         );
       }
+      // allNoteIndexedDB = await getNoteIndexedDB(idUser);
+      // sizeLocal = allNoteIndexedDB.length;
+      break;
+    }
+  }
+}
 
-      this.allNote = await getNoteIndexedDB(this.idUser);
-      sizeIndexedDB = this.sizeIndexedDB.length;
+export async function syncIndexedDBToClound(idUser, token) {
+  let allNoteClound = await getNoteClound(token);
+  allNoteClound = allNoteClound.res.note.results;
+  let allNoteIndexedDB = await getNoteIndexedDB(idUser);
+  console.log("teste", allNoteClound.length);
+  let sizeClound = allNoteClound.length;
+  let sizeIndexedDB = allNoteIndexedDB.length;
+  let findNoteId;
+
+  for (let i = 0; i < sizeClound; i++) {
+    let noteIdIndexedDB = allNoteIndexedDB[i].noteId;
+    let usersIdIndexedDB = allNoteIndexedDB[i].usersId;
+    let titleIndexedDB = allNoteIndexedDB[i].title;
+    let descriptionIndexedDB = allNoteIndexedDB[i].description;
+    let lastUpdateIndexedDB = allNoteIndexedDB[i].lastUpdate;
+    let deletedIndexedDB = allNoteIndexedDB[i].deleted;
+
+    if (sizeIndexedDB  > 0 && sizeClound > 0) {
+      for (let i = 0; i < sizeClound; i++) {
+        try {
+          findNoteId = allNoteClound.find(
+            (Element) => Element.noteId == noteIdIndexedDB
+          );
+        } catch (error) {
+          findNoteId = "error500";
+        }
+        if (findNoteId != undefined) {
+          let lastUpdateClound = findNoteId.lastUpdate;
+          let noteIdClound = findNoteId.id;
+          if (lastUpdateClound > lastUpdateLocal) {
+            //const noteIdLocal = allNoteIndexedDB.find(Element => Element.noteId == noteIdClound).id
+            await setNoteIndexedDB(
+              noteIdLocal,
+              noteIdClound,
+              usersIdClound,
+              titleClound,
+              descriptionClound,
+              lastUpdateClound,
+              deletedClound
+            );
+            //this.allNoteIndexedDB = await getNoteIndexedDB(this.idUser);
+          }
+        } else {
+          await addNoteIndexedDB(
+            noteIdClound,
+            usersIdClound,
+            titleClound,
+            descriptionClound,
+            lastUpdateClound,
+            deletedClound
+          );
+          break;
+        }
+      }
+    } else if (sizeIndexedDB  > 0 && sizeClound == 0) {
+      for (let i = 0; i < sizeClound; i++) {
+        noteIdIndexedDB = allNoteIndexedDB[i].noteId;
+        usersIdIndexedDB = allNoteIndexedDB[i].usersId;
+        titleIndexedDB = allNoteIndexedDB[i].title;
+        descriptionIndexedDB = allNoteIndexedDB[i].description;
+        lastUpdateIndexedDB = allNoteIndexedDB[i].lastUpdate;
+        deletedIndexedDB = allNoteIndexedDB[i].deleted;
+
+        await addNoteIndexedDB(
+          noteIdIndexedDB,
+          usersIdIndexedDB,
+          titleIndexedDB,
+          descriptionIndexedDB,
+          lastUpdateIndexedDB,
+          deletedIndexedDB
+        );
+      }
+      // allNoteIndexedDB = await getNoteIndexedDB(idUser);
+      // sizeLocal = allNoteIndexedDB.length;
       break;
     }
   }
