@@ -3,7 +3,7 @@ import {
   addNoteIndexedDB,
   setNoteIndexedDB,
 } from "./IndexedDB";
-import { getNoteClound } from "./Worker";
+import { getNoteClound, insertNoteClound, setNoteClound } from "./Worker";
 
 export async function syncCloundToIndexedDB(idUser, token) {
   let allNoteClound = await getNoteClound(token);
@@ -91,7 +91,8 @@ export async function syncIndexedDBToClound(idUser, token) {
   let sizeIndexedDB = allNoteIndexedDB.length;
   let findNoteId;
 
-  for (let i = 0; i < sizeClound; i++) {
+  for (let i = 0; i < sizeIndexedDB; i++) {
+    let idIndexedDB = allNoteIndexedDB[i].id
     let noteIdIndexedDB = allNoteIndexedDB[i].noteId;
     let usersIdIndexedDB = allNoteIndexedDB[i].usersId;
     let titleIndexedDB = allNoteIndexedDB[i].title;
@@ -110,30 +111,27 @@ export async function syncIndexedDBToClound(idUser, token) {
         }
         if (findNoteId != undefined) {
           let lastUpdateClound = findNoteId.lastUpdate;
-          let noteIdClound = findNoteId.id;
-          if (lastUpdateClound > lastUpdateLocal) {
+          let noteIdClound = findNoteId.noteId;
+          if (lastUpdateIndexedDB > lastUpdateClound) {
             //const noteIdLocal = allNoteIndexedDB.find(Element => Element.noteId == noteIdClound).id
-            await setNoteIndexedDB(
-              noteIdLocal,
+            await setNoteClound(
+              idIndexedDB,
               noteIdClound,
-              usersIdClound,
-              titleClound,
-              descriptionClound,
-              lastUpdateClound,
-              deletedClound
+              idUser,
+              titleIndexedDB,
+              descriptionIndexedDB,
+              deletedIndexedDB,
+              token,
             );
             //this.allNoteIndexedDB = await getNoteIndexedDB(this.idUser);
           }
         } else {
-          await addNoteIndexedDB(
-            noteIdClound,
-            usersIdClound,
-            titleClound,
-            descriptionClound,
-            lastUpdateClound,
-            deletedClound
+          await insertNoteClound(
+            titleIndexedDB,
+            descriptionIndexedDB,
+            token
           );
-          break;
+          i = sizeClound;
         }
       }
     } else if (sizeIndexedDB  > 0 && sizeClound == 0) {
@@ -145,14 +143,21 @@ export async function syncIndexedDBToClound(idUser, token) {
         lastUpdateIndexedDB = allNoteIndexedDB[i].lastUpdate;
         deletedIndexedDB = allNoteIndexedDB[i].deleted;
 
-        await addNoteIndexedDB(
-          noteIdIndexedDB,
-          usersIdIndexedDB,
+        const noteInserted = await insertNoteClound(
+          // noteIdIndexedDB,
+          // usersIdIndexedDB,
           titleIndexedDB,
           descriptionIndexedDB,
-          lastUpdateIndexedDB,
-          deletedIndexedDB
+          token
+          // lastUpdateIndexedDB,
+          // deletedIndexedDB
         );
+
+        const lastUpdateClound = noteInserted.result.res.lastNote.lastUpdate
+        console.log("lastUpdateClound",lastUpdateClound)
+
+        await setNoteIndexedDB(idIndexedDB,noteIdIndexedDB,idUser,titleIndexedDB,descriptionIndexedDB,lastUpdateClound,deletedIndexedDB)
+
       }
       // allNoteIndexedDB = await getNoteIndexedDB(idUser);
       // sizeLocal = allNoteIndexedDB.length;

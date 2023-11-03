@@ -8,7 +8,7 @@ import { fromJSON } from 'postcss';
 import AddNote from './components/AddNote.vue';
 import { getNoteClound } from './components/Worker'
 import ShowAllNotes from './components/ShowAllNotes.vue';
-import { syncCloundToIndexedDB } from './components/SyncNote'
+import { syncCloundToIndexedDB, syncIndexedDBToClound } from './components/SyncNote'
 
 export default {
   components: { AddNote, ShowAllNotes },
@@ -331,7 +331,13 @@ export default {
     },
 
     async reloadNote() {
-      await syncCloundToIndexedDB(this.idUser, this.token)
+      try {
+        await syncCloundToIndexedDB(this.idUser, this.token);
+        await syncIndexedDBToClound(this.idUser, this.token);
+      } catch {
+        console.log("No connection to the server")
+      }
+
       this.allNote = [];
       this.allNoteIndexedDB = await getNoteIndexedDB(this.idUser);
       const sizeAllNoteIndexedDB = this.allNoteIndexedDB.length;
