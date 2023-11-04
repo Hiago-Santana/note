@@ -57,7 +57,7 @@
         <div v-if="buttonEnterNote" class="p-[2rem]">
             <div class="grid grid-cols-3">
                 <button
-                    @click="addTitleDescription(index), toggleModal = false, descriptionList = false, buttonEnterNote = false, showButtonEnterNote = true, $emit('visible-notes',true)"
+                    @click="addTitleDescription(index),$emit('visible-search-system', true), toggleModal = false, descriptionList = false, buttonEnterNote = false, showButtonEnterNote = true, $emit('visible-notes',true)"
                     class="place-self-start"><font-awesome-icon icon="fa-solid fa-arrow-left" /></button>
                 <button v-if="!descriptionList" @click="descriptionList = true" class="place-self-center"><font-awesome-icon
                         icon="fa-solid fa-list-check" /></button>
@@ -105,7 +105,7 @@
 
         <!-- button to enter note when width screen is smaller than 500px -->
         <footer v-if="toggleWidht && showButtonEnterNote" class=" fixed bottom-0 rigth-0 pb-4 place-self-end">
-            <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
+            <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false), $emit('visible-search-system', false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
                     size="2xl" />
             </button>
         </footer>
@@ -118,7 +118,7 @@ import { formatDate, isJson } from './Tools'
 import { insertNoteClound } from './Worker'
 export default {
     props: ['token', 'idUser','toggleWidht', 'visibleNote'],
-    emits: ['reload-note','visible-notes'],
+    emits: ['reload-note','visible-notes', 'visible-search-system'],
     data() {
         return {
             // toggleWidht: null,

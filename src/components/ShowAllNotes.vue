@@ -6,7 +6,7 @@
             <h1 id="1" class="display:true">Visible</h1>
             <h1 id="2" class="hidden">Invisible</h1>
         </div>
-        <div v-for="entered in allNote" :key="entered" @click="$emit('show-accessed-note',entered.id), $emit('visible-notes',false), toggleTitle = false" class="">
+        <div v-for="entered in allNote" :key="entered" @click="$emit('show-accessed-note',entered.id), $emit('visible-notes',false), $emit('visible-search-system', false), toggleTitle = false" class="">
             <div v-if="entered.deleted == null"
                 class=" container shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]  p-2 rounded-md mt-2 content-start break-words font-semibold hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)] dark:bg-zinc-900 dark:shadow-none dark:border-2 dark:border-gray-700">
                 <div v-if="Array.isArray(entered.description)">
@@ -32,6 +32,6 @@
 <script>
 export default {
     props:['allNote'],
-    emits:['show-accessed-note','visible-notes']
+    emits:['show-accessed-note','visible-notes','visible-search-system']
 }
 </script>

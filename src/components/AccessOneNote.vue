@@ -65,7 +65,7 @@ import { formatDate, isJson } from './Tools'
 export default {
     mounted() { this.viewNote(this.idAccessedNote, this.allNote) },
     props: ['idAccessedNote', 'allNote', 'token'],
-    emits: ['visible-notes', 'show-accessed-note', 'reload-note', 'remove-note-index'],
+    emits: ['visible-notes', 'show-accessed-note', 'reload-note', 'remove-note-index', 'visible-search-system'],
     data() {
         return {
             indexNote: [],
@@ -194,6 +194,7 @@ export default {
             this.$emit('reload-note')
             this.$emit('visible-notes', true)
             this.$emit('show-accessed-note')
+            this.$emit('visible-search-system', true)
         }
     }
 

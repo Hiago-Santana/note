@@ -5,6 +5,7 @@ import LogInSignUp from './components/LogInSignUp.vue'
 import AddNote from './components/AddNote.vue'
 import ShowAllNotes from './components/ShowAllNotes.vue'
 import AccessOneNote from './components/AccessOneNote.vue'
+import SearchNote from './components/SearchNote.vue'
 
 //import icons
 /* import the fontawesome core */
@@ -27,7 +28,9 @@ const app = createApp(App);
 app.component('login-sign-up', LogInSignUp);
 app.component('add-note', AddNote);
 app.component('show-all-notes', ShowAllNotes);
-app.component('accessed-note', AccessOneNote)
+app.component('accessed-note', AccessOneNote);
+app.component('search-note', SearchNote)
+
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 
