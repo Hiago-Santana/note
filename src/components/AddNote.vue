@@ -153,7 +153,6 @@ export default {
             const title = this.enteredTitle;
             const description = { 'value': null };
             let resultCloundInsertNote;
-            console.log("descriptionList",this.descriptionList)
             if (this.descriptionList == true) {
                 if (this.enteredDescription != null && this.enteredDescription != "") {
                     this.enteredListDescription.push({ checkBox: this.checkedBoxListDescription, description: this.enteredDescription });
@@ -167,7 +166,7 @@ export default {
 
                 if (navigator.onLine) {
                     try {
-                        resultCloundInsertNote = await insertNoteClound(title, description.value, this.token, this.idUser)
+                        resultCloundInsertNote = await insertNoteClound(title, description.value, this.token)
                         if (resultCloundInsertNote.res.noteinsert === true) {
                             const noteId = resultCloundInsertNote.res.lastNote.results[0].noteId;
                             const usersId = resultCloundInsertNote.res.lastNote.results[0].usersId;
