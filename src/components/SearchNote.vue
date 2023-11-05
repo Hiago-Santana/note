@@ -61,7 +61,7 @@ export default {
             if (this.valueSearchCopy != this.valueSearch) {
                 this.valueSearchCopy = this.valueSearch;
                 if (this.valueSearch != null) {
-                    this.$emit('hide-all-notes', false)
+                    this.$emit('hide-all-notes', false, true)
                     this.showButtonReturn = true;
                     this.searchResult = [];
                     const result = this.index.search(this.valueSearch);

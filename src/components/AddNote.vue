@@ -57,7 +57,7 @@
         <div v-if="buttonEnterNote" class="p-[2rem]">
             <div class="grid grid-cols-3">
                 <button
-                    @click="addTitleDescription(index),$emit('visible-search-system', true), toggleModal = false, descriptionList = false, buttonEnterNote = false, showButtonEnterNote = true, $emit('visible-notes',true)"
+                    @click="addTitleDescription(index),$emit('visible-search-system', true), toggleModal = false, descriptionList = false, buttonEnterNote = false, showButtonEnterNote = true, $emit('visible-notes',true,false)"
                     class="place-self-start"><font-awesome-icon icon="fa-solid fa-arrow-left" /></button>
                 <button v-if="!descriptionList" @click="descriptionList = true" class="place-self-center"><font-awesome-icon
                         icon="fa-solid fa-list-check" /></button>
@@ -105,7 +105,7 @@
 
         <!-- button to enter note when width screen is smaller than 500px -->
         <footer v-if="toggleWidht && showButtonEnterNote" class=" fixed bottom-0 rigth-0 pb-4 place-self-end">
-            <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false), $emit('visible-search-system', false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
+            <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false,false), $emit('visible-search-system', false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
                     size="2xl" />
             </button>
         </footer>
@@ -162,7 +162,7 @@ export default {
                 description.value = this.enteredDescription;
             }
 
-            if (title != null || description.value != null) {
+            if (title != null && title != "" || description.value != null && description.value != "") {
 
                 if (navigator.onLine) {
                     try {

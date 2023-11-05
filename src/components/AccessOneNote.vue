@@ -1,5 +1,5 @@
 <template>
-    <!-- <div v-if="toggleModal && !buttonEnterNote && toggleWidht"> -->
+    <div v-if="toggleWidht">
     <div class="p-[2rem]">
         <div class="grid grid-cols-2">
             <button class="place-self-start"
@@ -56,7 +56,86 @@
                 placeholder="Nota" required style=""></textarea>
         </div>
     </div>
-    <!-- </div> -->
+    </div>
+
+    <div v-if="!toggleWidht" class="relative z-10" aria-labelledby="modal-title"
+          role="dialog" aria-modal="true">
+          <div class="fixed inset-0 bg-gray-500 dark:bg-[#333339]  bg-opacity-50 dark:bg-opacity-50 transition-opacity"></div>
+          <div></div>
+          <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+              <div
+                class="relative transform overflow-hidden  bg-white- text-left  transition-all ">
+                <div class="bg-white dark:bg-zinc-900 shadow-xl rounded-lg mb-2 px-4 pb-4 pt-5 sm:p-6 sm:pb-4 max-h-screen">
+                  <div class="">
+                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                      <div class="grid grid-cols-2">
+                        <button class="place-self-start" @click="editeNote(), toggleModal = false"><font-awesome-icon
+                            icon="fa-solid fa-arrow-left" /></button>
+                        <button @click="toggleModal = false, editeNote(null, 'deleted')"
+                          class="place-self-end"><font-awesome-icon icon="fa-solid fa-trash" style="color: #707070;" />
+                        </button>
+                      </div>
+                      <div v-if="Array.isArray(indexNote.description)">
+                        <input :value="indexNote.title" @input="event => indexNote.title = event.target.value"
+                          placeholder="Título"
+                          class="text-2xl font-bold break-words input input-bordere border-0 w-full rounded-md m-1 focus:outline-none dark:bg-zinc-900" />
+                        <div v-for="(entered, index) in indexNote.description" :key="entered"
+                          class="grid grid-cols-12 group/item">
+                          <input type="checkbox" :checked=entered.checkBox
+                            @change="indexNote.description[index].checkBox = !indexNote.description[index].checkBox"
+                            class="col-start-1 col-span-1 object-contain h-4 w-4 place-self-center ">
+                          <input type="text" :value=entered.description
+                            v-on:keyup.enter="indexNote.description[0].description"
+                            @input="event => indexNote.description[index].description = event.target.value"
+                            class="col-start-2 col-span-10 focus:outline-none dark:bg-zinc-900">
+                          <button @click="editeNote(trash = index)"
+                            class="invisible group-hover/item:visible "><font-awesome-icon icon="fa-solid fa-x"
+                              class="col-end-7 col-span-1" /></button>
+                        </div>
+
+                        <div class="grid grid-cols-12">
+                          <div v-if="addChecKBox"
+                            class="col-start-1 col-span-1 object-contain h-4 w-4 place-self-center ">
+                            <input type="checkbox" id="checkbox" v-model="checkedBox"
+                              class="object-contain h-4 w-4 place-self-center ">
+                          </div>
+                          <div v-else>
+                            <button @click="addChecKBox = true"><font-awesome-icon icon="fa-solid fa-plus"
+                                class="object-contain h-4 w-4 place-self-center mx-1" /></button>
+                          </div>
+                          <div class="col-start-2 col-span-10">
+                            <input type="text" v-on:keyup.enter="editeNote()" placeholder="Item da lista"
+                              v-model="enteredDescription" @focus="addChecKBox = true" @blur="editeNote()"
+                              class="focus:outline-none dark:bg-zinc-900">
+                          </div>
+                          <div v-if="enteredDescription != null" class="col-start-1 col-span-12">
+                            <button @click="addChecKBox = true"><font-awesome-icon icon="fa-solid fa-plus"
+                                class="object-contain h-4 w-4 place-self-center mx-1" /></button>
+                            <input type="text" v-on:keyup.enter="editeNote()" placeholder="Item da lista"
+                              @focus="addChecKBox = true" class="dark:bg-zinc-900">
+                          </div>
+
+                        </div>
+                      </div>
+                      <div v-else>
+                        <input :value="indexNote.title" @input="event => indexNote.title = event.target.value"
+                          placeholder="Título"
+                          class="text-2xl font-bold break-words input input-bordere w-full rounded-md m-1 focus:outline-none dark:bg-zinc-900" />
+                        <textarea :value="indexNote.description"
+                          @input="event => indexNote.description = event.target.value" rows="35"
+                          class="overflow-auto focus:outline-none w-full px-0 text-sm bg-white border-0 dark:bg-zinc-900 m-1"
+                          placeholder="Nota" required style=""></textarea>
+                      </div>
+                      <div class="mt-2">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 </template>
 <script>
 import { setNoteClound } from './Worker'
@@ -64,7 +143,7 @@ import { setNoteIndexedDB } from './IndexedDB'
 import { formatDate, isJson } from './Tools'
 export default {
     mounted() { this.viewNote(this.idAccessedNote, this.allNote) },
-    props: ['idAccessedNote', 'allNote', 'token'],
+    props: ['idAccessedNote', 'allNote', 'token', 'toggleWidht'],
     emits: ['visible-notes', 'show-accessed-note', 'reload-note', 'remove-note-index', 'visible-search-system'],
     data() {
         return {
@@ -192,7 +271,7 @@ export default {
                 this.enteredDescription = null;
             }
             this.$emit('reload-note')
-            this.$emit('visible-notes', true)
+            this.$emit('visible-notes', true, false)
             this.$emit('show-accessed-note')
             this.$emit('visible-search-system', true)
         }

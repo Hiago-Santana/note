@@ -30,7 +30,6 @@ export default {
       visibleNote: true,
       idAccessedNote: null,
       visibleAddNote: false,
-      toggleWidht: 'null',
       screenWidth: null,
       allNoteIndexedDB: null,
       showSearchSystem: true,
@@ -48,16 +47,26 @@ export default {
 
   methods: {
 
-    visbleSearchSystem(visible){
-      this.showSearchSystem = visible
+    visbleSearchSystem(visible) {
+      if (!visible && this.toggleWidht) {
+          this.showSearchSystem = false;
+      } else {
+        this.showSearchSystem = true;
+      }
+
     },
 
     showAccessedNote(id) {
       this.idAccessedNote = id
     },
 
-    hideAllNotes(visibleNote) {
-      this.visibleNote = visibleNote;
+    hideAllNotes(visibleNote, searchNote) {
+      if (!visibleNote && this.toggleWidht || searchNote) {
+        this.visibleNote = false;
+      } else {
+        this.visibleNote = true;
+      }
+      //this.visibleNote = visibleNote;
       //this.visibleAddNote = visibleNote;
     },
 
@@ -109,7 +118,7 @@ export default {
 
             this.allNote.push({ id: id, noteId: noteId, usersId: usersId, title: title, description: description, lastUpdate: lastUpdate, deleted: deleted })
             //this.index = new Index({ tokenize: "full" }),
-              this.index.add(id, title);
+            this.index.add(id, title);
             this.index.append(id, description)
           }
         }
@@ -122,16 +131,19 @@ export default {
 </script>
 <template>
   <div class=" h-screen dark:bg-zinc-900">
-    <login-sign-up @set-log-information="setLogInformation" @call-reload-note="reloadNote"></login-sign-up>
-    <search-note v-if="logIn && showSearchSystem" :index="index" :allNote="allNote" @visible-search-system="visbleSearchSystem" @hide-all-notes="hideAllNotes" @show-accessed-note="showAccessedNote"></search-note>
-    <add-note :token="token" :id-user="idUser" :toggle-widht="toggleWidht" :visible-note="visibleNote"
+    <login-sign-up v-if="!logIn" @set-log-information="setLogInformation" @call-reload-note="reloadNote"></login-sign-up>
+    <search-note v-if="logIn && showSearchSystem" :index="index" :allNote="allNote"
+      @visible-search-system="visbleSearchSystem" @hide-all-notes="hideAllNotes"
+      @show-accessed-note="showAccessedNote"></search-note>
+    <add-note v-if="logIn" :token="token" :id-user="idUser" :toggle-widht="toggleWidht" :visible-note="visibleNote"
       @reload-note="reloadNote" @visible-notes="hideAllNotes" @visible-search-system="visbleSearchSystem"></add-note>
     <!-- view saved notes -->
     <show-all-notes v-if="visibleNote" :allNote="allNote" @show-accessed-note="showAccessedNote"
       @visible-notes="hideAllNotes" @visible-search-system="visbleSearchSystem"></show-all-notes>
-    <accessed-note v-if="idAccessedNote != null" :idAccessedNote="idAccessedNote" :allNote="allNote" :token="token"
-      @show-accessed-note="showAccessedNote" @visible-notes="hideAllNotes" @reload-note="reloadNote"
-      @remove-note-index="index.remove()" @visible-search-system="visbleSearchSystem"></accessed-note>
+    <accessed-note v-if="idAccessedNote != null" :toggleWidht="toggleWidht" :idAccessedNote="idAccessedNote"
+      :allNote="allNote" :token="token" @show-accessed-note="showAccessedNote" @visible-notes="hideAllNotes"
+      @reload-note="reloadNote" @remove-note-index="index.remove()"
+      @visible-search-system="visbleSearchSystem"></accessed-note>
 
   </div>
 </template>

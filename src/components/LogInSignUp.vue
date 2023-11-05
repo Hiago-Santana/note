@@ -1,9 +1,62 @@
+<template>
+    <section class="h-screen ">
+        <div class="flex w-screnn h-screen">
+            <div class="flex-auto w-1/6"></div>
+            <div class="flex-auto min-w-75% max-w-sm self-center border rounded-md dark:border-gray-700">
+                <div v-if="!logIn && !buttonSignUpLogIn" class="grid  mx-8 my-40">
+                    <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
+                    <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
+                    <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Log in</button>
+                    <button @click="buttonSignUpLogIn = 'sigUp'"
+                        class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Sign
+                        up</button>
+
+                </div>
+                <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid content-center ">
+                    <div class="grid grid-cols-1 grid-rows-2 content-center mx-8">
+                        <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
+                        <div class="grid content-center h-full">
+                            <p class="text-red-600">{{ mensageAlerte }}</p>
+                            <input type="text" placeholder="nome" v-model="newUserName"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <input type="text" placeholder="email" v-model="newUserEmail"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <input type="text" placeholder="senha" v-model="newUserPassword"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Sign up</button>
+                            <p class="grid justify-items-center">or</p>
+                            <button @click="buttonSignUpLogIn = 'log'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Log in</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid content-center mx-8">
+                    <div class="grid grid-cols-1 grid-rows-2 content-center mx-8">
+                        <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
+                        <div class="grid content-center h-full">
+                            <p class="text-red-600">{{ mensageAlerte }}</p>
+                            <input type="text" placeholder="email" v-model="logEmail"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <input type="text" placeholder="senha" v-model="logPassword"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <button @click="userLog(logEmail, logPassword)" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Log
+                                in</button>
+                            <p class="grid justify-items-center">or</p>
+                            <button @click="buttonSignUpLogIn = 'sigUp'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-auto w-1/6"></div>
+        </div>
+    </section>
+</template>
+
 <script>
-import  {createAcount, logInCount} from './Worker'
+import { createAcount, logInCount } from './Worker'
 //import { reloadNote } from '../App.vue'
 
 export default {
-    emits:["set-log-information","call-reload-note"],
+    emits: ["set-log-information", "call-reload-note"],
     data() {
         return {
             logIn: false,
@@ -16,7 +69,7 @@ export default {
             newUserPassword: null,
             newUserName: null,
             resultCloundLogin: null,
-            
+
         }
     },
     methods: {
@@ -48,9 +101,9 @@ export default {
                 const idUser = this.resultCloundLogin.userAuthentication.idUser
                 //const allNoteClound = this.resultCloundLogin.userAuthentication.note
                 //console.log("logIn", this.logIn);
-                this.$emit("set-log-information",this.token, idUser, this.logIn)
+                this.$emit("set-log-information", this.token, idUser, this.logIn)
                 this.$emit("call-reload-note");
-                
+
                 //reloadNote()
             }
         }
@@ -59,44 +112,3 @@ export default {
 }
 </script>
 
-<template>
-    <section class="">
-        <div v-if="!logIn && !buttonSignUpLogIn" class="grid grip-cols-3 content-end mx-8 h-screen w-1/4">
-            <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
-            <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
-            <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Log in</button>
-            <button @click="buttonSignUpLogIn = 'sigUp'"
-                class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Sign
-                up</button>
-
-        </div>
-        <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid content-center mx-8 h-screen">
-            <div class="grid grid-cols-1 grid-rows-2 content-center mx-8 h-screen">
-                <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
-                <div class="grid content-center h-full">
-                    <p class="text-red-600">{{ mensageAlerte }}</p>
-                    <input type="text" placeholder="nome" v-model="newUserName" class="mb-2 bg-inherit focus:outline-none">
-                    <input type="text" placeholder="email" v-model="newUserEmail" class="mb-2 bg-inherit focus:outline-none">
-                    <input type="text" placeholder="senha" v-model="newUserPassword" class="mb-2 bg-inherit focus:outline-none">
-                    <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Sign up</button>
-                    <p class="grid justify-items-center">or</p>
-                    <button class="mt-2 bg-inneret rounded-md p-1 border-blue-500">Log in</button>
-                </div>
-            </div>
-        </div>
-        <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid content-center mx-8 h-screen">
-            <div class="grid grid-cols-1 grid-rows-2 content-center mx-8 h-screen">
-                <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
-                <div class="grid content-center h-full">
-                    <p class="text-red-600">{{ mensageAlerte }}</p>
-                    <input type="text" placeholder="email" v-model="logEmail" class="mb-2 bg-inherit focus:outline-none">
-                    <input type="text" placeholder="senha" v-model="logPassword" class="mb-2 bg-inherit focus:outline-none">
-                    <button @click="userLog(logEmail, logPassword)" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Log
-                        in</button>
-                    <p class="grid justify-items-center">or</p>
-                    <button class="mt-2 bg-inneret rounded-md p-1 border-blue-500">Sign Up</button>
-                </div>
-            </div>
-        </div>
-    </section>
-</template>
