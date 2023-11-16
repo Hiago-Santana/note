@@ -6,10 +6,9 @@
                 <div v-if="!logIn && !buttonSignUpLogIn" class="grid  mx-8 my-40">
                     <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
                     <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
-                    <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Log in</button>
+                    <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Entrar</button>
                     <button @click="buttonSignUpLogIn = 'sigUp'"
-                        class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Sign
-                        up</button>
+                        class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Criar conta                        </button>
 
                 </div>
                 <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid content-center ">
@@ -23,9 +22,9 @@
                                 class="mb-2 bg-inherit focus:outline-none">
                             <input type="text" placeholder="senha" v-model="newUserPassword"
                                 class="mb-2 bg-inherit focus:outline-none">
-                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Sign up</button>
+                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
                             <p class="grid justify-items-center">or</p>
-                            <button @click="buttonSignUpLogIn = 'log'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Log in</button>
+                            <button @click="buttonSignUpLogIn = 'log'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
                         </div>
                     </div>
                 </div>
@@ -38,10 +37,9 @@
                                 class="mb-2 bg-inherit focus:outline-none">
                             <input type="text" placeholder="senha" v-model="logPassword"
                                 class="mb-2 bg-inherit focus:outline-none">
-                            <button @click="userLog(logEmail, logPassword)" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Log
-                                in</button>
+                            <button @click="userLog(logEmail, logPassword)" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar                                </button>
                             <p class="grid justify-items-center">or</p>
-                            <button @click="buttonSignUpLogIn = 'sigUp'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Sign Up</button>
+                            <button @click="buttonSignUpLogIn = 'sigUp'" class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
                         </div>
                     </div>
                 </div>
