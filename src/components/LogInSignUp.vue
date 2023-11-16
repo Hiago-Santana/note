@@ -13,9 +13,9 @@
                     </div>
                 </div>
                 <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40">
-                    <div class="grid grid-rows-2 content-center mx-8">
+                    <div class="grid content-center mx-10">
                         <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
-                        <div class="grid content-center h-full">
+                        <div class="grid content-center">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="nome" v-model="newUserName"
                                 class="mb-2 bg-inherit focus:outline-none">
@@ -31,9 +31,9 @@
                     </div>
                 </div>
                 <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid mx-8 my-40">
-                    <div class="grid grid-rows-2 content-center mx-8">
+                    <div class="grid content-center mx-10">
                         <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
-                        <div class="grid content-center h-full">
+                        <div class="grid content-center">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="email" v-model="logEmail"
                                 class="mb-2 bg-inherit focus:outline-none">
