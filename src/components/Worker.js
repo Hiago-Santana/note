@@ -1,6 +1,29 @@
-//const api_url =	"https://frosty-recipe-fd6f.hiago-douglas.workers.dev";
+//////////const api_url =	"https://frosty-recipe-fd6f.hiago-douglas.workers.dev";
 //const api_url = "http://127.0.0.1:8787/";
 const api_url =	"https://worker1note.hiago-douglas.workers.dev"
+
+export async function checkUniqueUser(logEmail) {
+  let result = null;
+  try {
+    const data = {
+      type: "checkUniqueUser",
+      logEmail: logEmail,
+    };
+    const response = await fetch(api_url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    result = await response.json();
+    return result;
+    
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 
 export async function createAcount(type, cAName, cAEmail, cAPassword) {
   try {
@@ -43,11 +66,8 @@ export async function logInCount(logEmail, logPassword) {
     });
 
     result = await response.json();
-    if (result.userAuthentication.authentication === true) {
-      const id = result.userAuthentication.id;
-      return result;
-    }
-    //console.log("Success:", result);
+    return result;
+
   } catch (error) {
     console.error("Error:", error);
   }

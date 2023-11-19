@@ -12,28 +12,28 @@
                             class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Criar conta </button>
                     </div>
                 </div>
-                <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40">
-                    <div class="grid content-center mx-10">
+                <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40 h-full">
+                    <div class="grid content-center mx-10 h-full">
                         <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
-                        <div class="grid content-center">
-                            <p class="text-red-600">{{ mensageAlerte }}</p>
-                            <input type="text" placeholder="nome" v-model="newUserName"
-                                class="mb-2 bg-inherit focus:outline-none">
-                            <input type="text" placeholder="email" v-model="newUserEmail"
-                                class="mb-2 bg-inherit focus:outline-none">
-                            <input type="text" placeholder="senha" v-model="newUserPassword"
-                                class="mb-2 bg-inherit focus:outline-none">
-                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
-                            <p class="grid justify-items-center">or</p>
-                            <button @click="buttonSignUpLogIn = 'log'"
-                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
+                        <div class="grid content-end h-96">              
+                                <p class="text-red-600">{{ mensageAlerte }}</p>
+                                <input type="text" placeholder="nome" v-model="newUserName"
+                                    class="mb-2 bg-inherit focus:outline-none">
+                                <input type="text" placeholder="email" v-model="newUserEmail"
+                                    class="mb-2 bg-inherit focus:outline-none">
+                                <input type="text" placeholder="senha" v-model="newUserPassword"
+                                    class="mb-2 bg-inherit focus:outline-none">
+                                <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
+                                <p class="grid justify-items-center">or</p>
+                                <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
+                                    class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
                         </div>
                     </div>
                 </div>
-                <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid mx-8 my-40">
-                    <div class="grid content-center mx-10">
+                <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid mx-8 my-40 h-full">
+                    <div class="grid content-center mx-10 h-full">
                         <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
-                        <div class="grid content-center">
+                        <div class="grid content-end h-96">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="email" v-model="logEmail"
                                 class="mb-2 bg-inherit focus:outline-none">
@@ -42,7 +42,7 @@
                             <button @click="userLog(logEmail, logPassword)"
                                 class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar </button>
                             <p class="grid justify-items-center">or</p>
-                            <button @click="buttonSignUpLogIn = 'sigUp'"
+                            <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
                                 class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { createAcount, logInCount } from './Worker'
+import { createAcount, logInCount, checkUniqueUser } from './Worker'
 //import { reloadNote } from '../App.vue'
 
 export default {
@@ -71,11 +71,11 @@ export default {
             newUserPassword: null,
             newUserName: null,
             resultCloundLogin: null,
-
         }
     },
     methods: {
         async sigUp() {
+            this.mensageAlerte = null;
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const emailValidate = re.test(this.newUserEmail);
             if (this.newUserName == null || this.newUserName == "") {
@@ -89,24 +89,32 @@ export default {
                 this.mensageAlerte = "Insira uma senha com mais de 5 caracteres"
             }
             else {
-                //console.log("Sucesso")
-                createAcount("createAcount", this.newUserName, this.newUserEmail, this.newUserPassword)
+                const uniqueUser = await checkUniqueUser(this.newUserEmail)
+                console.log("uniqueUser", uniqueUser.result.uniqueUser)
+
+                if (uniqueUser.result.uniqueUser) {
+                    this.mensageAlerte = null;
+                    await createAcount("createAcount", this.newUserName, this.newUserEmail, this.newUserPassword)
+                    await this.userLog(this.newUserEmail, this.newUserPassword)
+                } else {
+                    this.mensageAlerte = "Esse usuário já exite."
+                }
+
             }
         },
 
         async userLog(logEmail, logPassword) {
-
+            this.mensageAlerte = null;
             this.resultCloundLogin = await logInCount(logEmail, logPassword)
             if (this.resultCloundLogin.userAuthentication.authentication == true) {
                 this.logIn = this.resultCloundLogin.userAuthentication.authentication;
                 this.token = this.resultCloundLogin.userAuthentication.token
                 const idUser = this.resultCloundLogin.userAuthentication.idUser
-                //const allNoteClound = this.resultCloundLogin.userAuthentication.note
-                //console.log("logIn", this.logIn);
                 this.$emit("set-log-information", this.token, idUser, this.logIn)
                 this.$emit("call-reload-note");
+            } else {
+                this.mensageAlerte = "Usuário ou senha inválidos"
 
-                //reloadNote()
             }
         }
 
