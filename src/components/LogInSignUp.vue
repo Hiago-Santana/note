@@ -25,9 +25,9 @@
                                 class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none">
                             <span class="flex">
                                 <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
-                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
                                 <input v-else type="password" placeholder="senha" v-model="newUserPassword"
-                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
 
                                 <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
                                             icon="fa-regular fa-eye" /></button></span>
@@ -53,21 +53,27 @@
                                 class="mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
                             <span class="flex">
                                 <input v-if="showPassword" type="text" placeholder="senha" v-model="logPassword"
-                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
                                 <input v-if="!showPassword" type="password" placeholder="senha" v-model="logPassword"
-                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
 
                                 <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
                                             icon="fa-regular fa-eye" /></button></span>
                                 <span v-if="showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
                                             icon="fa-regular fa-eye-slash" /></button></span>
                             </span>
-
-                            <button @click="userLog(logEmail, logPassword)"
-                                class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar </button>
-                            <p class="grid justify-items-center">ou</p>
+                            
+                            <div class="grid grid-cols-1 place-items-center first-line:w-full content-center">
+                                
+                              <button @click="userLog(logEmail, logPassword)"
+                                class="mb-2 mt-4 bg-blue-500 rounded-md p-1 w-2/5 place-self-center">Entrar </button>  
+                               <p class="grid justify-items-center">ou</p>
                             <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
                                 class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
+                            </div>
+                            
+                            
+                            
                         </div>
                     </div>
                 </div>
