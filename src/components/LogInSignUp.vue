@@ -1,11 +1,13 @@
 <template>
     <section class="h-screen ">
+
         <div class="flex w-screnn h-screen">
             <div class="flex-auto w-1/6"></div>
             <div class="flex-auto min-w-75% max-w-sm self-center border rounded-md dark:border-gray-700">
                 <div v-if="!logIn && !buttonSignUpLogIn" class="grid mx-8 my-40">
                     <div class="grid grid-rows-2 content-center mx-8">
                         <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
+
                         <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
                         <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Entrar</button>
                         <button @click="buttonSignUpLogIn = 'sigUp'"
@@ -15,18 +17,30 @@
                 <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40 h-full">
                     <div class="grid content-center mx-10 h-full">
                         <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
-                        <div class="grid content-end h-96">              
-                                <p class="text-red-600">{{ mensageAlerte }}</p>
-                                <input type="text" placeholder="nome" v-model="newUserName"
+                        <div class="grid content-end h-96">
+                            <p class="text-red-600">{{ mensageAlerte }}</p>
+                            <input type="text" placeholder="nome" v-model="newUserName"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <input type="text" placeholder="email" v-model="newUserEmail"
+                                class="mb-2 bg-inherit focus:outline-none">
+                            <span>
+                                <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
                                     class="mb-2 bg-inherit focus:outline-none">
-                                <input type="text" placeholder="email" v-model="newUserEmail"
+                                <input v-else type="password" placeholder="senha" v-model="newUserPassword"
                                     class="mb-2 bg-inherit focus:outline-none">
-                                <input type="text" placeholder="senha" v-model="newUserPassword"
-                                    class="mb-2 bg-inherit focus:outline-none">
-                                <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
-                                <p class="grid justify-items-center">ou</p>
-                                <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
-                                    class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
+
+                                <span v-if="!showPassword"><button @click="toggleShowPassword"><font-awesome-icon
+                                            icon="fa-regular fa-eye" /></button></span>
+                                <span v-if="showPassword"><button @click="toggleShowPassword"><font-awesome-icon
+                                            icon="fa-regular fa-eye-slash" /></button></span>
+                            </span>
+
+
+
+                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
+                            <p class="grid justify-items-center">or</p>
+                            <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
+                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
                         </div>
                     </div>
                 </div>
@@ -41,7 +55,7 @@
                                 class="mb-2 bg-inherit focus:outline-none">
                             <button @click="userLog(logEmail, logPassword)"
                                 class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar </button>
-                            <p class="grid justify-items-center">ou</p>
+                            <p class="grid justify-items-center">or</p>
                             <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
                                 class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
                         </div>
@@ -71,6 +85,7 @@ export default {
             newUserPassword: null,
             newUserName: null,
             resultCloundLogin: null,
+            showPassword: false,
         }
     },
     methods: {
@@ -116,6 +131,10 @@ export default {
                 this.mensageAlerte = "Usuário ou senha inválidos"
 
             }
+        },
+
+        toggleShowPassword() {
+            this.showPassword = !this.showPassword
         }
 
     }

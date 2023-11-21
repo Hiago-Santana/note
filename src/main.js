@@ -20,9 +20,11 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { faListCheck } from '@fortawesome/free-solid-svg-icons'
 import { faX } from '@fortawesome/free-solid-svg-icons'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import { faEye } from '@fortawesome/free-regular-svg-icons'
 
 /* add icons to the library */
-library.add(faUserSecret, faXmark, faTrash, faCirclePlus, faArrowLeft, faListCheck, faX, faPlus)
+library.add(faUserSecret, faXmark, faTrash, faCirclePlus, faArrowLeft, faListCheck, faX, faPlus, faEyeSlash, faEye)
 
 const app = createApp(App);
 app.component('login-sign-up', LogInSignUp);
