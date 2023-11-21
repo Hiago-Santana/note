@@ -38,7 +38,7 @@
 
 
                             <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
-                            <p class="grid justify-items-center">or</p>
+                            <p class="grid justify-items-center">ou</p>
                             <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
                                 class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
                         </div>
@@ -55,7 +55,7 @@
                                 class="mb-2 bg-inherit focus:outline-none">
                             <button @click="userLog(logEmail, logPassword)"
                                 class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar </button>
-                            <p class="grid justify-items-center">or</p>
+                            <p class="grid justify-items-center">ou</p>
                             <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
                                 class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
                         </div>
