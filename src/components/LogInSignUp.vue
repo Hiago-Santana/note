@@ -20,19 +20,19 @@
                         <div class="grid content-end h-96">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="nome" v-model="newUserName"
-                                class="mb-2 bg-inherit focus:outline-none">
+                                class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none">
                             <input type="text" placeholder="email" v-model="newUserEmail"
-                                class="mb-2 bg-inherit focus:outline-none">
-                            <span>
+                                class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none">
+                            <span class="flex">
                                 <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
-                                    class="mb-2 bg-inherit focus:outline-none">
+                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
                                 <input v-else type="password" placeholder="senha" v-model="newUserPassword"
-                                    class="mb-2 bg-inherit focus:outline-none">
+                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
 
-                                <span v-if="!showPassword"><button @click="toggleShowPassword"><font-awesome-icon
+                                <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
                                             icon="fa-regular fa-eye" /></button></span>
-                                <span v-if="showPassword"><button @click="toggleShowPassword"><font-awesome-icon
-                                            icon="fa-regular fa-eye-slash" /></button></span>
+                                <span v-if="showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
+                                            icon="fa-regular fa-eye-slash " /></button></span>
                             </span>
 
 
@@ -50,9 +50,19 @@
                         <div class="grid content-end h-96">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="email" v-model="logEmail"
-                                class="mb-2 bg-inherit focus:outline-none">
-                            <input type="text" placeholder="senha" v-model="logPassword"
-                                class="mb-2 bg-inherit focus:outline-none">
+                                class="mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                            <span class="flex">
+                                <input v-if="showPassword" type="text" placeholder="senha" v-model="logPassword"
+                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+                                <input v-if="!showPassword" type="password" placeholder="senha" v-model="logPassword"
+                                    class="flex-initial w-64 mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+
+                                <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
+                                            icon="fa-regular fa-eye" /></button></span>
+                                <span v-if="showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
+                                            icon="fa-regular fa-eye-slash" /></button></span>
+                            </span>
+
                             <button @click="userLog(logEmail, logPassword)"
                                 class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Entrar </button>
                             <p class="grid justify-items-center">ou</p>
