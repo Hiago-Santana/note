@@ -3,81 +3,97 @@
 
         <div class="flex w-screnn h-screen">
             <div class="flex-auto w-1/6"></div>
-            <div class="flex-auto min-w-75% max-w-sm self-center border rounded-md dark:border-gray-700">
-                <div v-if="!logIn && !buttonSignUpLogIn" class="grid mx-8 my-40">
-                    <div class="grid grid-rows-2 content-center mx-8">
-                        <h1 class="text-2xl mb-1 text-blue-500">1 Note</h1>
+            <!-- <div class="flex-auto min-w-75% max-w-sm max-h-[90%] self-center border rounded-md dark:border-gray-700"> -->
+            <div v-if="!logIn && !buttonSignUpLogIn"
+                class="flex-auto min-w-80% max-w-sm h-[90%] self-center border rounded-md dark:border-gray-700 grid mx-8 my-40">
+                <div class="grid grid-rows-2 content-center mx-8">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl mb-1 text-blue-500 ">1 Note</h1>
+                    </div>
 
-                        <h2 class="mb-10 text-sm">Suas anotações em um único lugar.</h2>
-                        <button @click="buttonSignUpLogIn = 'log'" class="mb-2 bg-blue-500 rounded-md p-1">Entrar</button>
+                    <div class="grid grid-rows-3 ">
+
+                        <h2 class="text-sm">Suas anotações em um único lugar.</h2>
+                        <button @click="buttonSignUpLogIn = 'log'"
+                            class="mb-1 h-11 bg-blue-500 rounded-md p-1 hover:bg-blue-600">Entrar</button>
                         <button @click="buttonSignUpLogIn = 'sigUp'"
-                            class="mb-40 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1">Criar conta </button>
+                            class="mb-1 h-11 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1 hover:bg-blue-600">Criar
+                            conta </button>
                     </div>
+
                 </div>
-                <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40 h-full">
-                    <div class="grid content-center mx-10 h-full">
-                        <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
-                        <div class="grid content-end h-96">
-                            <p class="text-red-600">{{ mensageAlerte }}</p>
-                            <input type="text" placeholder="nome" v-model="newUserName"
-                                class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none">
-                            <input type="text" placeholder="email" v-model="newUserEmail"
-                                class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none">
-                            <span class="flex">
-                                <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
-                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
-                                <input v-else type="password" placeholder="senha" v-model="newUserPassword"
-                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
+            </div>
+            <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'" class="grid mx-8 my-40 h-full">
+                <div class="grid content-center mx-10 h-full">
+                    <h1 class="text-2xl text-blue-500 grid content-center">Crie uma conta</h1>
+                    <div class="grid content-end h-96">
+                        <p class="text-red-600">{{ mensageAlerte }}</p>
+                        <input type="text" placeholder="nome" v-model="newUserName"
+                            class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
+                        <input type="text" placeholder="email" v-model="newUserEmail"
+                            class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
+                        <span class="flex">
+                            <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
+                                class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
+                            <input v-else type="password" placeholder="senha" v-model="newUserPassword"
+                                class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
 
-                                <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
-                                            icon="fa-regular fa-eye" /></button></span>
-                                <span v-if="showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
-                                            icon="fa-regular fa-eye-slash " /></button></span>
-                            </span>
+                            <span v-if="!showPassword"><button @click="toggleShowPassword"
+                                    class="flex-none w-8 border-2 rounded border-gray-200 dark:border-gray-800 hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)]"><font-awesome-icon
+                                        icon="fa-regular fa-eye" /></button></span>
+                            <span v-if="showPassword"><button @click="toggleShowPassword"
+                                    class="flex-none w-8 border-2 rounded border-gray-200 dark:border-gray-800 hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)]"><font-awesome-icon
+                                        icon="fa-regular fa-eye-slash " /></button></span>
+                        </span>
 
 
 
-                            <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1">Criar conta</button>
-                            <p class="grid justify-items-center">ou</p>
-                            <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
-                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20">Entrar</button>
-                        </div>
-                    </div>
-                </div>
-                <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid mx-8 my-40 h-full">
-                    <div class="grid content-center mx-10 h-full">
-                        <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
-                        <div class="grid content-end h-96">
-                            <p class="text-red-600">{{ mensageAlerte }}</p>
-                            <input type="text" placeholder="email" v-model="logEmail"
-                                class="mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
-                            <span class="flex">
-                                <input v-if="showPassword" type="text" placeholder="senha" v-model="logPassword"
-                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
-                                <input v-if="!showPassword" type="password" placeholder="senha" v-model="logPassword"
-                                    class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none">
-
-                                <span v-if="!showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
-                                            icon="fa-regular fa-eye" /></button></span>
-                                <span v-if="showPassword"><button @click="toggleShowPassword" class="flex-none w-8 border-2 rounded border-gray-200"><font-awesome-icon
-                                            icon="fa-regular fa-eye-slash" /></button></span>
-                            </span>
-                            
-                            <div class="grid grid-cols-1 place-items-center first-line:w-full content-center">
-                                
-                              <button @click="userLog(logEmail, logPassword)"
-                                class="mb-2 mt-4 bg-blue-500 rounded-md p-1 w-2/5 place-self-center">Entrar </button>  
-                               <p class="grid justify-items-center">ou</p>
-                            <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
-                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40">Criar Conta</button>
-                            </div>
-                            
-                            
-                            
-                        </div>
+                        <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1 hover:bg-blue-600">Criar
+                            conta</button>
+                        <p class="grid justify-items-center ">ou</p>
+                        <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
+                            class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20 hover:bg-blue-600">Entrar</button>
                     </div>
                 </div>
             </div>
+            <div v-if="!logIn && buttonSignUpLogIn == 'log'" class="grid mx-8 my-40 h-full">
+                <div class=" content-center mx-10 h-full">
+                    <h1 class="text-2xl text-blue-500 grid content-center">Bem vindo de volta</h1>
+                    <div class="grid content-end h-96 grid-">
+                        <p class="text-red-600">{{ mensageAlerte }}</p>
+                        <input type="text" placeholder="email" v-model="logEmail"
+                            class="mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
+                        <span class="flex">
+                            <input v-if="showPassword" type="text" placeholder="senha" v-model="logPassword"
+                                class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 dark:border-gray-800 focus:outline-none">
+                            <input v-if="!showPassword" type="password" placeholder="senha" v-model="logPassword"
+                                class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
+
+                            <span v-if="!showPassword"><button @click="toggleShowPassword"
+                                    class="flex-none w-8 border-2 rounded border-gray-200 dark:border-gray-800 hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)]"><font-awesome-icon
+                                        icon="fa-regular fa-eye" /></button></span>
+                            <span v-if="showPassword"><button @click="toggleShowPassword"
+                                    class="flex-none w-8 border-2 rounded border-gray-200 dark:border-gray-800 hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)]"><font-awesome-icon
+                                        icon="fa-regular fa-eye-slash" /></button></span>
+                        </span>
+
+
+
+                        <button @click="userLog(logEmail, logPassword)"
+                            class="mb-2 mt-4 bg-blue-500 rounded-md p-1 dark:border-gray-800 hover:bg-blue-600">Entrar
+                        </button>
+                        <p class="grid justify-items-center">ou</p>
+                        <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
+                            class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40 hover:bg-blue-600">Criar
+                            Conta</button>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
             <div class="flex-auto w-1/6"></div>
         </div>
     </section>
