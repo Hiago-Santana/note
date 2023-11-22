@@ -3,7 +3,7 @@
         <div class="flex justify-center w-screnn h-screen">
 
             <div v-if="!logIn && !buttonSignUpLogIn"
-                class="flex flex-auto min-w-80% max-w-sm h-[90%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
                 <div class="grid grid-rows-2 content-center mx-8">
                     <div class="flex items-center">
                         <h1 class="text-2xl mb-1 text-blue-500 ">1 Note</h1>
@@ -22,7 +22,7 @@
             </div>
 
             <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'"
-                class="flex flex-auto min-w-80% max-w-sm h-[90%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
                 <div class="grid grid-rows-2 content-center mx-10 h-full">
                     <div class="text-2xl text-blue-500 grid content-center">
                         <h1>Crie uma conta</h1>
@@ -55,7 +55,7 @@
             </div>
 
             <div v-if="!logIn && buttonSignUpLogIn == 'log'"
-                class="flex flex-auto min-w-80% max-w-sm h-[90%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
                 <div class="grid grid-rows-2 content-center mx-10 h-full">
                     <div class="text-2xl text-blue-500 grid content-center">
                         <h1>Bem vindo de volta</h1>
