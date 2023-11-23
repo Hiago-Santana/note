@@ -1,4 +1,3 @@
-//////////const api_url =	"https://frosty-recipe-fd6f.hiago-douglas.workers.dev";
 //const api_url = "http://127.0.0.1:8787/";
 const api_url =	"https://worker1note.hiago-douglas.workers.dev"
 
