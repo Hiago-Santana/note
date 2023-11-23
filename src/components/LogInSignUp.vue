@@ -30,9 +30,9 @@
                     <div class="grid content-end">
                         <p class="text-red-600">{{ mensageAlerte }}</p>
                         <input type="text" placeholder="nome" v-model="newUserName"
-                            class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
+                            class="capitalize border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
                         <input type="text" placeholder="email" v-model="newUserEmail"
-                            class="border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
+                            class="lowercase border-2 rounded border-gray-200 mb-2 bg-inherit focus:outline-none dark:border-gray-800">
                         <span class="flex">
                             <input v-if="showPassword" type="text" placeholder="senha" v-model="newUserPassword"
                                 class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
@@ -64,7 +64,7 @@
                         <div class="grid content-end grid-">
                             <p class="text-red-600">{{ mensageAlerte }}</p>
                             <input type="text" placeholder="email" v-model="logEmail"
-                                class="mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
+                                class="lowercase mb-2 bg-inherit border-2 rounded border-gray-200 focus:outline-none dark:border-gray-800">
                             <span class="flex">
                                 <input v-if="showPassword" type="text" placeholder="senha" v-model="logPassword"
                                     class="flex-initial w-full mb-2 bg-inherit border-2 rounded border-gray-200 dark:border-gray-800 focus:outline-none">
@@ -130,8 +130,8 @@ export default {
                 this.mensageAlerte = "Insira uma senha com mais de 5 caracteres"
             }
             else {
+                this.newUserEmail = this.newUserEmail.toLowerCase();
                 const uniqueUser = await checkUniqueUser(this.newUserEmail)
-                console.log("uniqueUser", uniqueUser.result.uniqueUser)
 
                 if (uniqueUser.result.uniqueUser) {
                     this.mensageAlerte = null;
@@ -146,6 +146,7 @@ export default {
 
         async userLog(logEmail, logPassword) {
             this.mensageAlerte = null;
+            logEmail = logEmail.toLowerCase();
             this.resultCloundLogin = await logInCount(logEmail, logPassword)
             if (this.resultCloundLogin.userAuthentication.authentication == true) {
                 this.logIn = this.resultCloundLogin.userAuthentication.authentication;

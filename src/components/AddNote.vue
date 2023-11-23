@@ -54,7 +54,7 @@
         </div>
 
         <!-- Add note when screen width is smallet than 500px -->
-        <div v-if="buttonEnterNote" class="p-[2rem]">
+        <div v-if="buttonEnterNote" class="pt-7">
             <div class="grid grid-cols-3">
                 <button
                     @click="addTitleDescription(index),$emit('visible-search-system', true), toggleModal = false, descriptionList = false, buttonEnterNote = false, showButtonEnterNote = true, $emit('visible-notes',true,false)"
@@ -104,7 +104,7 @@
         </div>
 
         <!-- button to enter note when width screen is smaller than 500px -->
-        <footer v-if="toggleWidht && showButtonEnterNote" class=" fixed bottom-0 rigth-0 pb-4 place-self-end">
+        <footer v-if="toggleWidht && showButtonEnterNote && visibleNote" class=" fixed bottom-0 rigth-0 pb-4 place-self-end">
             <button @click="showButtonEnterNote = false, buttonEnterNote = true, toggleModal = true, $emit('visible-notes',false,false), $emit('visible-search-system', false)"><font-awesome-icon icon="fa-solid fa-circle-plus"
                     size="2xl" />
             </button>
