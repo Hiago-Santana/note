@@ -3,28 +3,28 @@
         <div class="flex justify-center w-screnn h-screen">
 
             <div v-if="!logIn && !buttonSignUpLogIn"
-                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40 shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]">
                 <div class="grid grid-rows-2 content-center mx-8">
                     <div class="flex items-center">
-                        <h1 class="text-2xl mb-1 text-blue-500 ">1 Note</h1>
+                        <h1 class="text-2xl mb-1 text-blue-500 font-semibold drop-shadow-md">1 Note</h1>
                     </div>
                     <div class="grid content-center">
                         <div class="flex justify-center">
-                            <h2 class="text-sm my-3">Suas anotações em um único lugar.</h2>
+                            <h2 class="text-sm my-3 ">Suas anotações em um único lugar.</h2>
                         </div>
                         <button @click="buttonSignUpLogIn = 'log'"
-                            class="mb-1 h-8 bg-blue-500 rounded-md p-1 hover:bg-blue-600">Entrar</button>
+                            class="mb-1 h-8 bg-blue-500 rounded-md p-1 hover:bg-blue-600 hover:text-white">Entrar</button>
                         <button @click="buttonSignUpLogIn = 'sigUp'"
-                            class="mb-1 h-8 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1 hover:bg-blue-600">Criar
+                            class="mb-1 h-8 dark:bg-zinc-900 border-2 border-blue-500 rounded-md p-1 hover:bg-blue-600 hover:text-white">Criar
                             conta </button>
                     </div>
                 </div>
             </div>
 
             <div v-if="!logIn && buttonSignUpLogIn == 'sigUp'"
-                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40 shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]">
                 <div class="grid grid-rows-2 content-center mx-10 h-full">
-                    <div class="text-2xl text-blue-500 grid content-center">
+                    <div class="text-2xl text-blue-500 font-semibold grid content-center">
                         <h1>Crie uma conta</h1>
                     </div>
                     <div class="grid content-end">
@@ -45,19 +45,19 @@
                                     class="flex-none w-8 border-2 rounded border-gray-200 dark:border-gray-800 hover:shadow-[0_7px_15px_1px_rgba(0,0,0,0.5)]"><font-awesome-icon
                                         icon="fa-regular fa-eye-slash " /></button></span>
                         </span>
-                        <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1 hover:bg-blue-600">Criar
+                        <button @click="sigUp()" class="mb-2 mt-4 bg-blue-500 rounded-md p-1 hover:bg-blue-600 hover:text-white">Criar
                             conta</button>
                         <p class="grid justify-items-center ">ou</p>
                         <button @click="buttonSignUpLogIn = 'log', mensageAlerte = null"
-                            class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20 hover:bg-blue-600">Entrar</button>
+                            class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-20 hover:bg-blue-600 hover:text-white">Entrar</button>
                     </div>
                 </div>
             </div>
 
             <div v-if="!logIn && buttonSignUpLogIn == 'log'"
-                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40">
+                class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40 shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]">
                 <div class="grid grid-rows-2 content-center mx-10 h-full">
-                    <div class="text-2xl text-blue-500 grid content-center">
+                    <div class="text-2xl text-blue-500 font-semibold grid content-center">
                         <h1>Bem vindo de volta</h1>
                     </div>
                     <div>
@@ -79,11 +79,11 @@
                                             icon="fa-regular fa-eye-slash" /></button></span>
                             </span>
                             <button @click="userLog(logEmail, logPassword)"
-                                class="mb-2 mt-4 bg-blue-500 rounded-md p-1 dark:border-gray-800 hover:bg-blue-600">Entrar
+                                class="mb-2 mt-4 bg-blue-500 rounded-md p-1 dark:border-gray-800 hover:bg-blue-600 hover:text-white">Entrar
                             </button>
                             <p class="grid justify-items-center">ou</p>
                             <button @click="buttonSignUpLogIn = 'sigUp', mensageAlerte = null"
-                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40 hover:bg-blue-600">Criar
+                                class="mt-2 bg-inneret rounded-md p-1 border-blue-500 mb-40 hover:bg-blue-600 hover:text-white">Criar
                                 Conta</button>
                         </div>
                     </div>
