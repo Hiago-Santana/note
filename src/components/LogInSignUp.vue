@@ -1,6 +1,6 @@
 <template>
     <section class="h-screen ">
-        <div class="flex justify-center w-screnn h-screen">
+        <div class="flex justify-center w-screen h-screen">
 
             <div v-if="!logIn && !buttonSignUpLogIn"
                 class="flex flex-auto min-w-80% max-w-sm h-[80%] justify-center self-center border rounded-md dark:border-gray-700  mx-8 my-40 shadow-[0_7px_15px_1px_rgba(0,0,0,0.3)]">
